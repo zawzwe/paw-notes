@@ -38,15 +38,27 @@ export default async function ProfilePage() {
     const { data: authData } = await supabase.auth.getClaims();
     if (!authData?.claims) return;
 
-    await supabase
-      .from("profiles")
-      .upsert({
-        user_id: authData.claims.sub,
-        nickname,
-        updated_at: new Date().toISOString(),
-      });
+    const userId = authData.claims.sub;
 
-    revalidatePath("/");
+    // Check if profile exists
+    const { data: existing } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (existing) {
+      await supabase
+        .from("profiles")
+        .update({ nickname, updated_at: new Date().toISOString() })
+        .eq("user_id", userId);
+    } else {
+      await supabase
+        .from("profiles")
+        .insert({ user_id: userId, nickname });
+    }
+
+    revalidatePath("/", "layout");
     redirect("/protected");
   }
 
