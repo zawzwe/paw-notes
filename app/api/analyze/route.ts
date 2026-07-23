@@ -180,6 +180,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 9. Save analysis record (if authenticated)
+    console.log("[analyze] recordingId:", recordingId, "userId:", userId);
     if (recordingId) {
       const { error: analysisError } = await serviceClient.from("analyses").insert({
         recording_id: recordingId,
@@ -192,7 +193,9 @@ export async function POST(request: NextRequest) {
       });
 
       if (analysisError) {
-        console.error("Analysis insert error:", analysisError);
+        console.error("[analyze] Analysis insert error:", JSON.stringify(analysisError));
+      } else {
+        console.log("[analyze] Analysis saved successfully for recording:", recordingId);
       }
 
       // Update recording status

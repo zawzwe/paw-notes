@@ -19,7 +19,7 @@ interface HistoryItem {
   source: "realtime" | "upload";
   status: string;
   created_at: string;
-  analyses: AnalysisRow[] | null;
+  analysis: AnalysisRow[] | AnalysisRow | null;
 }
 
 const emotionMeta: Record<string, { emoji: string; zhLabel: string }> = {
@@ -63,7 +63,7 @@ export function HistoryList() {
       .from("recordings")
       .select(`
         id, species, source, status, created_at,
-        analyses (emotion_label, emotion_confidence, translated_text, translated_text_zh)
+        analysis:analyses(emotion_label, emotion_confidence, translated_text, translated_text_zh)
       `)
       .order("created_at", { ascending: false })
       .range(pageNum * PAGE_SIZE, (pageNum + 1) * PAGE_SIZE - 1);
@@ -149,7 +149,10 @@ export function HistoryList() {
   return (
     <div className="flex flex-col gap-3">
       {items.map((item) => {
-        const analysis = item.analyses?.[0] ?? null;
+        const analysisData = Array.isArray(item.analysis)
+          ? item.analysis[0]
+          : item.analysis ?? null;
+        const analysis = analysisData ?? null;
         const el = analysis?.emotion_label;
         const meta = el && emotionMeta[el]
           ? emotionMeta[el]
