@@ -1,16 +1,21 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState } from "react";
-import { Upload } from "lucide-react";
+import { useState, useCallback } from "react";
 import { AnimalSelector, type Animal } from "@/components/recording/animal-selector";
 import { Recorder } from "@/components/recording/recorder";
+import { AudioUploader } from "@/components/recording/audio-uploader";
 import { useRecording } from "@/hooks/use-recording";
 
 export function HomeContent() {
   const t = useTranslations();
   const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const recording = useRecording({ maxDuration: 30 });
+
+  const handleFileSelected = useCallback((file: File) => {
+    setUploadedFile(file);
+  }, []);
 
   return (
     <div className="flex-1 w-full max-w-md mx-auto flex flex-col gap-8 px-4 py-8">
@@ -36,16 +41,16 @@ export function HomeContent() {
         </p>
       )}
 
-      {/* ── 文件上传区（placeholder，第七步实现） ── */}
-      <section className="flex flex-col items-center">
-        <button
-          disabled={!selectedAnimal}
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        >
-          <Upload size={16} />
+      {/* ── 文件上传区 ── */}
+      <div className="flex flex-col items-center gap-1">
+        <p className="text-xs text-muted-foreground">
           {t("recording.uploadFile")}
-        </button>
-      </section>
+        </p>
+        <AudioUploader
+          onFileSelected={handleFileSelected}
+          disabled={!selectedAnimal}
+        />
+      </div>
 
       {/* ── 结果展示区（placeholder，第九步实现） ── */}
       <section className="flex flex-col gap-3">

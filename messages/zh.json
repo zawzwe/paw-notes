@@ -18,6 +18,14 @@
     "reRecord": "重新录制",
     "analyze": "开始分析"
   },
+  "upload": {
+    "dropOrClick": "点击上传或拖拽文件到此处",
+    "supportedFormats": "支持格式",
+    "maxSize": "最大 20MB",
+    "invalidFormat": "不支持的音频格式，请上传 WAV / MP3 / M4A / OGG / WebM",
+    "fileTooLarge": "文件过大，最大支持 20MB",
+    "selected": "已选择"
+  },
   "result": {
     "analyzing": "正在分析宠物声音...",
     "emotion": "情绪",

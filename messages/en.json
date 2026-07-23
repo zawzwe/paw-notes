@@ -18,6 +18,14 @@
     "reRecord": "Record again",
     "analyze": "Analyze"
   },
+  "upload": {
+    "dropOrClick": "Tap to browse or drag a file here",
+    "supportedFormats": "Supported formats",
+    "maxSize": "Up to 20MB",
+    "invalidFormat": "Unsupported audio format. Use WAV, MP3, M4A, OGG, or WebM.",
+    "fileTooLarge": "File is too large — 20MB max",
+    "selected": "Selected"
+  },
   "result": {
     "analyzing": "Listening to your pet...",
     "emotion": "Emotion",
