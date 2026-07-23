@@ -37,7 +37,8 @@
     "empty": "还没有分析记录，去首页录一段吧～",
     "analyzed": "已分析",
     "processing": "分析中...",
-    "loadMore": "加载更多"
+    "loadMore": "加载更多",
+    "noData": "分析数据未保存，请重新分析"
   },
   "nav": {
     "history": "历史记录",

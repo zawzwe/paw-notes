@@ -37,7 +37,8 @@
     "empty": "No recordings yet — head to the home page and give it a try!",
     "analyzed": "Analyzed",
     "processing": "Processing...",
-    "loadMore": "Load more"
+    "loadMore": "Load more",
+    "noData": "Analysis data wasn't saved — please try again"
   },
   "nav": {
     "history": "History",

@@ -202,15 +202,27 @@ export function HistoryList() {
             </div>
 
             {/* Expanded: detail text */}
-            {isExpanded && analysis && (
+            {isExpanded && (
               <div className="mt-3 pt-3 border-t border-muted-foreground/10">
-                <p className="text-sm italic leading-relaxed">
-                  &ldquo;{analysis.translated_text_zh || analysis.translated_text}&rdquo;
-                </p>
-                {analysis.emotion_confidence != null && (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {t("result.confidence")}:{" "}
-                    {Math.round(analysis.emotion_confidence * 100)}%
+                {analysis ? (
+                  <>
+                    <p className="text-sm italic leading-relaxed">
+                      &ldquo;{analysis.translated_text_zh || analysis.translated_text}&rdquo;
+                    </p>
+                    {analysis.emotion_confidence != null && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {t("result.confidence")}:{" "}
+                        {Math.round(analysis.emotion_confidence * 100)}%
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-xs text-muted-foreground">
+                    {item.status === "failed"
+                      ? t("common.error")
+                      : item.status === "processing"
+                      ? t("history.processing")
+                      : t("history.noData")}
                   </p>
                 )}
               </div>
