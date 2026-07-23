@@ -1,4 +1,5 @@
 {
+  "name": "paw-notes",
   "private": true,
   "scripts": {
     "dev": "next dev",
