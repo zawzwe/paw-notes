@@ -33,6 +33,12 @@
     "playTTS": "Play voice",
     "noResult": "No results yet"
   },
+  "history": {
+    "empty": "No recordings yet — head to the home page and give it a try!",
+    "analyzed": "Analyzed",
+    "processing": "Processing...",
+    "loadMore": "Load more"
+  },
   "nav": {
     "history": "History",
     "profile": "Profile"

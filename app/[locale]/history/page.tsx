@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { AuthButton } from "@/components/auth-button";
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { HistoryList } from "@/components/history/history-list";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -33,10 +34,9 @@ export default async function HistoryPage() {
           </div>
         </nav>
 
-        <div className="flex-1 flex flex-col items-center justify-center max-w-5xl p-5 text-center">
-          <p className="text-muted-foreground">
-            {t("common.loading")}
-          </p>
+        <div className="flex-1 w-full max-w-md mx-auto px-4 py-8">
+          <h1 className="text-lg font-semibold mb-6">{t("nav.history")}</h1>
+          <HistoryList />
         </div>
 
         <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-8 mt-auto">

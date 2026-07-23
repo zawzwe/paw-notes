@@ -33,6 +33,12 @@
     "playTTS": "播放语音",
     "noResult": "尚未分析"
   },
+  "history": {
+    "empty": "还没有分析记录，去首页录一段吧～",
+    "analyzed": "已分析",
+    "processing": "分析中...",
+    "loadMore": "加载更多"
+  },
   "nav": {
     "history": "历史记录",
     "profile": "个人设置"
