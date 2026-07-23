@@ -1,9 +1,10 @@
 "use client";
 
 import { useTranslations, useLocale } from "next-intl";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Sparkles, LogIn } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { AnimalSelector, type Animal } from "@/components/recording/animal-selector";
 import { Recorder } from "@/components/recording/recorder";
 import { AudioUploader } from "@/components/recording/audio-uploader";
@@ -28,6 +29,32 @@ export function HomeContent() {
   const [wasSaved, setWasSaved] = useState(false);
   const [dailyRemaining, setDailyRemaining] = useState<number | null>(null);
   const [userPlan, setUserPlan] = useState<string>("free");
+
+  // Fetch usage on mount when logged in
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: authData }) => {
+      if (!authData.user) return;
+      supabase
+        .from("profiles")
+        .select("plan, daily_usage_count, daily_usage_date")
+        .eq("user_id", authData.user.id)
+        .maybeSingle()
+        .then(({ data: profile }) => {
+          if (!profile) return;
+          setUserPlan(profile.plan || "free");
+          if (profile.plan === "free") {
+            const today = new Date().toISOString().split("T")[0];
+            const count =
+              profile.daily_usage_date === today
+                ? profile.daily_usage_count
+                : 0;
+            setDailyRemaining(Math.max(0, 3 - count));
+          }
+        });
+    });
+  }, [isLoggedIn]);
   const [analyzeState, setAnalyzeState] = useState<AnalyzeState>({
     loading: false,
     error: null,
