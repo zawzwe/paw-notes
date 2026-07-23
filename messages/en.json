@@ -53,9 +53,18 @@
     "signUp": "Sign up",
     "forgotPassword": "Forgot password"
   },
+  "profile": {
+    "title": "Profile",
+    "desc": "Set your display name and preferences",
+    "nickname": "Display name",
+    "nicknamePlaceholder": "Give yourself a nickname!",
+    "nicknameHint": "Up to 20 characters, shown in the top right instead of your email",
+    "email": "Login email"
+  },
   "common": {
     "loading": "Loading...",
     "error": "Something went wrong",
-    "retry": "Retry"
+    "retry": "Retry",
+    "save": "Save"
   }
 }

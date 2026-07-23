@@ -1,37 +1,99 @@
 import { redirect } from "next/navigation";
-
 import { createClient } from "@/lib/supabase/server";
-import { InfoIcon } from "lucide-react";
-import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
+import { revalidatePath } from "next/cache";
 
-async function UserDetails() {
+async function getUserProfile() {
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.getClaims();
+  const { data: authData } = await supabase.auth.getClaims();
 
-  if (error || !data?.claims) {
+  if (!authData?.claims) {
     redirect("/auth/login");
   }
 
-  return JSON.stringify(data.claims, null, 2);
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("nickname")
+    .eq("user_id", authData.claims.sub)
+    .single();
+
+  return {
+    userId: authData.claims.sub as string,
+    email: authData.claims.email as string,
+    nickname: (profile?.nickname as string) || "",
+  };
 }
 
-export default function ProtectedPage() {
+export default async function ProfilePage() {
+  const t = await getTranslations();
+  const profile = await getUserProfile();
+
+  async function saveNickname(formData: FormData) {
+    "use server";
+
+    const nickname = (formData.get("nickname") as string).trim().slice(0, 20);
+    if (!nickname) return;
+
+    const supabase = await createClient();
+    const { data: authData } = await supabase.auth.getClaims();
+    if (!authData?.claims) return;
+
+    await supabase
+      .from("profiles")
+      .upsert({
+        user_id: authData.claims.sub,
+        nickname,
+        updated_at: new Date().toISOString(),
+      });
+
+    revalidatePath("/");
+    redirect("/protected");
+  }
+
   return (
-    <div className="flex-1 w-full flex flex-col gap-12">
-      <div className="w-full">
-        <div className="bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center">
-          <InfoIcon size="16" strokeWidth={2} />
-          This is a protected page that you can only see as an authenticated
-          user
-        </div>
+    <div className="flex-1 w-full flex flex-col gap-8 max-w-md mx-auto">
+      <div>
+        <h2 className="font-bold text-2xl mb-2">
+          {t("profile.title")}
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          {t("profile.desc")}
+        </p>
       </div>
-      <div className="flex flex-col gap-2 items-start">
-        <h2 className="font-bold text-2xl mb-4">Your user details</h2>
-        <pre className="text-xs font-mono p-3 rounded border max-h-32 overflow-auto">
-          <Suspense>
-            <UserDetails />
-          </Suspense>
-        </pre>
+
+      {/* Nickname form */}
+      <form action={saveNickname} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <label htmlFor="nickname" className="text-sm font-medium">
+            {t("profile.nickname")}
+          </label>
+          <div className="flex gap-2">
+            <input
+              id="nickname"
+              name="nickname"
+              type="text"
+              defaultValue={profile.nickname}
+              maxLength={20}
+              placeholder={t("profile.nicknamePlaceholder")}
+              className="flex-1 h-10 rounded-lg border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+            <button
+              type="submit"
+              className="h-10 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+            >
+              {t("common.save")}
+            </button>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {t("profile.nicknameHint")}
+          </p>
+        </div>
+      </form>
+
+      {/* Email display */}
+      <div className="flex flex-col gap-1 pt-4 border-t border-muted-foreground/10">
+        <p className="text-xs text-muted-foreground">{t("profile.email")}</p>
+        <p className="text-sm">{profile.email}</p>
       </div>
     </div>
   );

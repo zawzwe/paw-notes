@@ -53,9 +53,18 @@
     "signUp": "注册",
     "forgotPassword": "忘记密码"
   },
+  "profile": {
+    "title": "个人设置",
+    "desc": "设置你的显示名称和偏好",
+    "nickname": "显示名称",
+    "nicknamePlaceholder": "给你的宠物起个名字吧～",
+    "nicknameHint": "最多 20 个字符，会显示在右上角代替邮箱",
+    "email": "登录邮箱"
+  },
   "common": {
     "loading": "加载中...",
     "error": "出错了",
-    "retry": "重试"
+    "retry": "重试",
+    "save": "保存"
   }
 }

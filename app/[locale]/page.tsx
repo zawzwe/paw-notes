@@ -25,6 +25,12 @@ export default async function Home() {
               >
                 {t("nav.history")}
               </Link>
+              <Link
+                href={"/protected"}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {t("nav.profile")}
+              </Link>
             </div>
             <div className="flex items-center gap-3">
               <LocaleSwitcher />
