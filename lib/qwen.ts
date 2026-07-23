@@ -8,7 +8,7 @@ interface QwenAnalysisResult {
 }
 
 /**
- * Analyze pet audio using Qwen3-Omni-Captioner
+ * Analyze pet audio using Qwen3-Omni-Flash (OpenAI-compatible, supports input_audio)
  */
 export async function analyzePetAudio(
   audioUrl: string,
@@ -27,7 +27,7 @@ export async function analyzePetAudio(
 {
   "emotion_label": "happy|sad|angry|fear|excited|hungry|pain|playful|anxious",
   "emotion_confidence": 0.0到1.0之间的数字,
-  "translated_text": "用${langText}写一段温暖的、以宠物第一人称口吻的话，像是宠物在对主人说话。${locale === "zh" ? "中文" : "英文"}",
+  "translated_text": "用${langText}写一段温暖的、以宠物第一人称口吻的话，像是宠物在对主人说话",
   "translated_text_zh": "用中文写一段温暖的、以宠物第一人称口吻的话"
 }`;
 
@@ -38,15 +38,15 @@ export async function analyzePetAudio(
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: "qwen3-omni-30b-a3b-captioner",
+      model: "qwen3-omni-flash",
       messages: [
         { role: "system", content: systemPrompt },
         {
           role: "user",
           content: [
             {
-              type: "audio_url",
-              audio_url: { url: audioUrl },
+              type: "input_audio",
+              input_audio: { data: audioUrl },
             },
             {
               type: "text",
@@ -80,7 +80,6 @@ export async function analyzePetAudio(
 
   const result: QwenAnalysisResult = JSON.parse(jsonMatch[0]);
 
-  // Validate required fields
   if (!result.emotion_label || result.emotion_confidence == null) {
     throw new Error(`Incomplete analysis result: ${JSON.stringify(result)}`);
   }
@@ -90,7 +89,6 @@ export async function analyzePetAudio(
 
 /**
  * Generate TTS audio from text using Qwen TTS
- * Returns a Buffer of MP3 audio data
  */
 export async function generateTTS(
   text: string,

@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 import { createApiClient } from "@/lib/supabase/api";
 import { analyzePetAudio, generateTTS } from "@/lib/qwen";
+
+// Service role client for server-side operations (bypasses RLS)
+function createServiceClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  );
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,34 +41,43 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = await createApiClient();
+    // Use service role client for storage/DB (bypasses RLS)
+    const serviceClient = createServiceClient();
 
-    // 2. Get current user (may be null for unauthenticated)
-    const { data: userData } = await supabase.auth.getClaims();
+    // Use anon client to check auth
+    const authClient = await createApiClient();
+    const { data: userData } = await authClient.auth.getClaims();
     const userId = userData?.claims?.sub;
 
     // 3. Upload audio file to Supabase Storage
     const fileBuffer = Buffer.from(await file.arrayBuffer());
-    const fileName = `${Date.now()}-${crypto.randomUUID()}.webm`;
+    // Detect MIME from extension (FormData may not set proper MIME)
+    const ext = file.name.split(".").pop()?.toLowerCase() || "webm";
+    const mimeMap: Record<string, string> = {
+      wav: "audio/wav", mp3: "audio/mpeg", m4a: "audio/x-m4a",
+      ogg: "audio/ogg", webm: "audio/webm",
+    };
+    const mimeType = mimeMap[ext] || "audio/webm";
+    const fileName = `${Date.now()}-${crypto.randomUUID()}.${ext}`;
     const filePath = `${userId || "anonymous"}/${fileName}`;
 
-    const { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await serviceClient.storage
       .from("audio-uploads")
       .upload(filePath, fileBuffer, {
-        contentType: file.type || "audio/webm",
+        contentType: mimeType,
         upsert: false,
       });
 
     if (uploadError) {
-      console.error("Storage upload error:", uploadError);
+      console.error("Storage upload error:", JSON.stringify(uploadError));
       return NextResponse.json(
-        { error: "Failed to upload audio file" },
+        { error: `Upload failed: ${uploadError.message}` },
         { status: 500 }
       );
     }
 
     // 4. Get signed URL (valid 5 min) for Qwen API
-    const { data: signedUrlData } = await supabase.storage
+    const { data: signedUrlData } = await serviceClient.storage
       .from("audio-uploads")
       .createSignedUrl(filePath, 300);
 
@@ -73,7 +92,7 @@ export async function POST(request: NextRequest) {
     // 5. Create recording record (if authenticated)
     let recordingId: string | null = null;
     if (userId) {
-      const { data: recording, error: recordingError } = await supabase
+      const { data: recording, error: recordingError } = await serviceClient
         .from("recordings")
         .insert({
           user_id: userId,
@@ -105,7 +124,7 @@ export async function POST(request: NextRequest) {
       console.error("AI analysis error:", aiError);
       // Update recording status if we have one
       if (recordingId) {
-        await supabase
+        await serviceClient
           .from("recordings")
           .update({ status: "failed", updated_at: new Date().toISOString() })
           .eq("id", recordingId);
@@ -133,7 +152,7 @@ export async function POST(request: NextRequest) {
       const ttsFileName = `tts-${Date.now()}.mp3`;
       ttsPath = `${userId || "anonymous"}/${ttsFileName}`;
 
-      const { error: ttsUploadError } = await supabase.storage
+      const { error: ttsUploadError } = await serviceClient.storage
         .from("tts-output")
         .upload(ttsPath, ttsBuffer, {
           contentType: "audio/mpeg",
@@ -152,7 +171,7 @@ export async function POST(request: NextRequest) {
     // 8. Get TTS signed URL
     let ttsUrl: string | null = null;
     if (ttsPath) {
-      const { data: ttsSigned } = await supabase.storage
+      const { data: ttsSigned } = await serviceClient.storage
         .from("tts-output")
         .createSignedUrl(ttsPath, 3600); // 1 hour
       ttsUrl = ttsSigned?.signedUrl || null;
@@ -160,7 +179,7 @@ export async function POST(request: NextRequest) {
 
     // 9. Save analysis record (if authenticated)
     if (recordingId) {
-      const { error: analysisError } = await supabase.from("analyses").insert({
+      const { error: analysisError } = await serviceClient.from("analyses").insert({
         recording_id: recordingId,
         emotion_label: analysisResult.emotion_label,
         emotion_confidence: analysisResult.emotion_confidence,
@@ -175,7 +194,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Update recording status
-      await supabase
+      await serviceClient
         .from("recordings")
         .update({ status: "completed", updated_at: new Date().toISOString() })
         .eq("id", recordingId);

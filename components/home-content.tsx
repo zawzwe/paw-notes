@@ -1,21 +1,95 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useState, useCallback } from "react";
+import { Sparkles } from "lucide-react";
 import { AnimalSelector, type Animal } from "@/components/recording/animal-selector";
 import { Recorder } from "@/components/recording/recorder";
 import { AudioUploader } from "@/components/recording/audio-uploader";
+import { AnalysisResult, type AnalysisData } from "@/components/result/analysis-result";
 import { useRecording } from "@/hooks/use-recording";
+
+type AnalyzeState = {
+  loading: boolean;
+  error: string | null;
+  data: AnalysisData | null;
+};
 
 export function HomeContent() {
   const t = useTranslations();
+  const locale = useLocale();
   const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadedDuration, setUploadedDuration] = useState(0);
   const recording = useRecording({ maxDuration: 30 });
+  const [analyzeState, setAnalyzeState] = useState<AnalyzeState>({
+    loading: false,
+    error: null,
+    data: null,
+  });
 
-  const handleFileSelected = useCallback((file: File) => {
+  // Get the current audio blob (recording or upload)
+  const audioBlob =
+    recording.state === "preview" ? recording.audioBlob : null;
+  const hasAudio = audioBlob || uploadedFile;
+
+  const handleFileSelected = useCallback((file: File, duration: number) => {
     setUploadedFile(file);
+    setUploadedDuration(duration);
+    setAnalyzeState({ loading: false, error: null, data: null });
   }, []);
+
+  const handleAnalyze = useCallback(async () => {
+    const fileToAnalyze = audioBlob || uploadedFile;
+    if (!fileToAnalyze || !selectedAnimal) return;
+
+    setAnalyzeState({ loading: true, error: null, data: null });
+
+    try {
+      const formData = new FormData();
+      formData.append(
+        "file",
+        fileToAnalyze,
+        audioBlob ? "recording.webm" : uploadedFile!.name
+      );
+      formData.append("species", selectedAnimal);
+      formData.append(
+        "source",
+        audioBlob ? "realtime" : "upload"
+      );
+      formData.append("locale", locale);
+
+      const response = await fetch("/api/analyze", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Analysis failed");
+      }
+
+      setAnalyzeState({
+        loading: false,
+        error: null,
+        data: {
+          emotion: result.emotion,
+          confidence: result.confidence,
+          text: result.text,
+          text_zh: result.text_zh,
+          tts_url: result.tts_url,
+        },
+      });
+    } catch (err) {
+      setAnalyzeState({
+        loading: false,
+        error:
+          err instanceof Error ? err.message : "Analysis failed",
+        data: null,
+      });
+    }
+  }, [audioBlob, uploadedFile, selectedAnimal, locale]);
 
   return (
     <div className="flex-1 w-full max-w-md mx-auto flex flex-col gap-8 px-4 py-8">
@@ -32,7 +106,10 @@ export function HomeContent() {
         audioUrl={recording.audioUrl}
         onStart={recording.startRecording}
         onStop={recording.stopRecording}
-        onReset={recording.reset}
+        onReset={() => {
+          recording.reset();
+          setAnalyzeState({ loading: false, error: null, data: null });
+        }}
         disabled={!selectedAnimal}
       />
       {recording.error && (
@@ -52,15 +129,24 @@ export function HomeContent() {
         />
       </div>
 
-      {/* ── 结果展示区（placeholder，第九步实现） ── */}
-      <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-medium text-muted-foreground text-center">
-          {t("result.noResult")}
-        </h2>
-        <div className="border border-dashed border-muted-foreground/30 rounded-2xl p-8 text-center text-sm text-muted-foreground">
-          {t("result.analyzing")}
-        </div>
-      </section>
+      {/* ── 分析按钮 ── */}
+      {hasAudio && !analyzeState.loading && !analyzeState.data && (
+        <button
+          onClick={handleAnalyze}
+          className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-medium text-sm bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 shadow-md transition-all active:scale-[0.98]"
+        >
+          <Sparkles className="w-4 h-4" />
+          {t("recording.analyze")}
+        </button>
+      )}
+
+      {/* ── 结果展示区 ── */}
+      <AnalysisResult
+        data={analyzeState.data}
+        loading={analyzeState.loading}
+        error={analyzeState.error}
+        locale={locale}
+      />
     </div>
   );
 }
