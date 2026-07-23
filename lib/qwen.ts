@@ -104,9 +104,9 @@ export async function generateTTS(
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: "qwen-tts-1.0",
+      model: "qwen3-tts-flash",
       input: text,
-      voice: locale === "zh" ? "longxiaochun" : "longbella",
+      voice: locale === "zh" ? "Cherry" : "Bella",
       response_format: "mp3",
       speed: 1.0,
     }),
