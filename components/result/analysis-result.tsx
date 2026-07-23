@@ -17,7 +17,7 @@ interface AnalysisResultProps {
   loading: boolean;
   error: string | null;
   locale: string;
-  onPlayTTS?: () => void;
+  wasSaved?: boolean;
 }
 
 const emotionMeta: Record<string, { emoji: string; zhLabel: string; enLabel: string }> = {
@@ -37,6 +37,7 @@ export function AnalysisResult({
   loading,
   error,
   locale,
+  wasSaved,
 }: AnalysisResultProps) {
   const t = useTranslations();
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -147,6 +148,13 @@ export function AnalysisResult({
           <Volume2 className={`w-4 h-4 ${isPlaying ? "animate-pulse" : ""}`} />
           {isPlaying ? "Playing..." : t("result.playTTS")}
         </button>
+      )}
+
+      {/* Saved indicator */}
+      {wasSaved && (
+        <p className="text-xs text-green-600 dark:text-green-400 text-center">
+          ✓ {locale === "zh" ? "已保存到历史记录" : "Saved to history"}
+        </p>
       )}
 
       <audio

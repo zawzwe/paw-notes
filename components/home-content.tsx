@@ -2,12 +2,14 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import { useState, useCallback } from "react";
-import { Sparkles } from "lucide-react";
+import { Sparkles, LogIn } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { AnimalSelector, type Animal } from "@/components/recording/animal-selector";
 import { Recorder } from "@/components/recording/recorder";
 import { AudioUploader } from "@/components/recording/audio-uploader";
 import { AnalysisResult, type AnalysisData } from "@/components/result/analysis-result";
 import { useRecording } from "@/hooks/use-recording";
+import { useAuth } from "@/hooks/use-auth";
 
 type AnalyzeState = {
   loading: boolean;
@@ -22,6 +24,8 @@ export function HomeContent() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadedDuration, setUploadedDuration] = useState(0);
   const recording = useRecording({ maxDuration: 30 });
+  const { isLoggedIn, loading: authLoading } = useAuth();
+  const [wasSaved, setWasSaved] = useState(false);
   const [analyzeState, setAnalyzeState] = useState<AnalyzeState>({
     loading: false,
     error: null,
@@ -69,6 +73,8 @@ export function HomeContent() {
       if (!response.ok) {
         throw new Error(result.error || "Analysis failed");
       }
+
+      setWasSaved(result.recorded ?? false);
 
       setAnalyzeState({
         loading: false,
@@ -146,7 +152,26 @@ export function HomeContent() {
         loading={analyzeState.loading}
         error={analyzeState.error}
         locale={locale}
+        wasSaved={wasSaved}
       />
+
+      {/* ── 未登录提示 ── */}
+      {!isLoggedIn && !authLoading && (
+        <div className="rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/20 p-4 text-center">
+          <p className="text-sm text-amber-700 dark:text-amber-300 mb-2">
+            {locale === "zh"
+              ? "登录后可以保存分析记录，随时回顾哦～"
+              : "Sign in to save your recordings and revisit them anytime!"}
+          </p>
+          <Link
+            href="/auth/login"
+            className="inline-flex items-center gap-2 text-sm font-medium text-amber-600 dark:text-amber-400 hover:underline"
+          >
+            <LogIn className="w-4 h-4" />
+            {locale === "zh" ? "去登录" : "Sign in"}
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
