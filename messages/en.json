@@ -1,0 +1,24 @@
+{
+  "home": {
+    "title": "🐾 PawNotes",
+    "subtitle": "Hear what your pet is saying — decode their sounds and emotions"
+  },
+  "nav": {
+    "history": "History",
+    "profile": "Profile"
+  },
+  "footer": {
+    "poweredBy": "Powered by Supabase & Qwen"
+  },
+  "auth": {
+    "login": "Log in",
+    "logout": "Log out",
+    "signUp": "Sign up",
+    "forgotPassword": "Forgot password"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Retry"
+  }
+}

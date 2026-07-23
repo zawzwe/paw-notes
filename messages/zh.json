@@ -1,0 +1,24 @@
+{
+  "home": {
+    "title": "🐾 PawNotes",
+    "subtitle": "宠物声音日记，读懂它们的心声"
+  },
+  "nav": {
+    "history": "历史记录",
+    "profile": "个人设置"
+  },
+  "footer": {
+    "poweredBy": "基于 Supabase & Qwen 构建"
+  },
+  "auth": {
+    "login": "登录",
+    "logout": "退出",
+    "signUp": "注册",
+    "forgotPassword": "忘记密码"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "出错了",
+    "retry": "重试"
+  }
+}
