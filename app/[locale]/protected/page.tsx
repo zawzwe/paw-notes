@@ -13,14 +13,20 @@ async function getUserProfile() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("nickname")
+    .select("nickname, plan, daily_usage_count, daily_usage_date")
     .eq("user_id", authData.claims.sub)
     .single();
+
+  const today = new Date().toISOString().split("T")[0];
+  const usageCount =
+    profile?.daily_usage_date === today ? (profile?.daily_usage_count ?? 0) : 0;
 
   return {
     userId: authData.claims.sub as string,
     email: authData.claims.email as string,
     nickname: (profile?.nickname as string) || "",
+    plan: (profile?.plan as string) || "free",
+    usageCount,
   };
 }
 
@@ -101,6 +107,35 @@ export default async function ProfilePage() {
           </p>
         </div>
       </form>
+
+      {/* Plan info */}
+      <div className="flex flex-col gap-3 pt-4 border-t border-muted-foreground/10">
+        <p className="text-xs text-muted-foreground">{t("profile.plan")}</p>
+        <div className="flex items-center gap-3">
+          <span
+            className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
+              profile.plan === "monthly"
+                ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
+                : "bg-muted text-muted-foreground"
+            }`}
+          >
+            {profile.plan === "monthly" ? "⭐ Monthly" : t("pricing.free.name")}
+          </span>
+          {profile.plan === "free" && profile.usageCount != null && (
+            <span className="text-xs text-muted-foreground">
+              {t("profile.usedToday", { count: profile.usageCount })}
+            </span>
+          )}
+        </div>
+        {profile.plan === "free" && (
+          <a
+            href="/pricing"
+            className="text-xs text-amber-600 dark:text-amber-400 hover:underline"
+          >
+            {t("profile.upgrade")} →
+          </a>
+        )}
+      </div>
 
       {/* Email display */}
       <div className="flex flex-col gap-1 pt-4 border-t border-muted-foreground/10">

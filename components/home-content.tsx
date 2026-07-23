@@ -146,18 +146,12 @@ export function HomeContent() {
             {locale === "zh" ? "今日剩余" : "Remaining today"}:{" "}
             <strong className="text-foreground">{dailyRemaining}</strong>/3
           </span>
-          <button
-            onClick={() =>
-              alert(
-                locale === "zh"
-                  ? "即将推出月度会员（¥9.9/月），畅享无限分析！"
-                  : "Monthly plan coming soon ($5.9/mo) — unlimited analyses!"
-              )
-            }
+          <Link
+            href="/pricing"
             className="text-amber-600 dark:text-amber-400 font-medium hover:underline"
           >
             {locale === "zh" ? "升级" : "Upgrade"}
-          </button>
+          </Link>
         </div>
       )}
 

@@ -52,7 +52,9 @@ export async function updateSession(
     pathname === "/" ||
     pathname.match(/^\/(en|zh)\/?$/) ||
     pathname.startsWith("/auth") ||
-    pathname.match(/^\/(en|zh)\/auth/);
+    pathname.match(/^\/(en|zh)\/auth/) ||
+    pathname.startsWith("/pricing") ||
+    pathname.match(/^\/(en|zh)\/pricing/);
 
   if (!user && !isPublicPath) {
     const url = request.nextUrl.clone();

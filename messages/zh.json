@@ -53,12 +53,40 @@
     "signUp": "注册",
     "forgotPassword": "忘记密码"
   },
+  "pricing": {
+    "title": "选择适合你的方案",
+    "subtitle": "免费开始，随时升级",
+    "comingSoon": "支付功能即将上线，敬请期待！",
+    "free": {
+      "name": "免费版",
+      "price": "免费",
+      "period": "永久",
+      "free_1": "每天 3 次分析",
+      "free_2": "保留最近 10 条记录",
+      "free_3": "基础情绪解读"
+    },
+    "monthly": {
+      "name": "月度会员",
+      "badge": "推荐",
+      "period": "月",
+      "price": "¥9.9",
+      "monthly_1": "无限次分析",
+      "monthly_2": "完整历史记录",
+      "monthly_3": "详细情绪解读",
+      "monthly_4": "TTS 语音播放（即将推出）",
+      "cta": "升级月度会员",
+      "ctaSignUp": "注册后升级"
+    }
+  },
   "profile": {
     "title": "个人设置",
     "desc": "设置你的显示名称和偏好",
     "nickname": "显示名称",
     "nicknamePlaceholder": "给你的宠物起个名字吧～",
     "nicknameHint": "最多 20 个字符，会显示在右上角代替邮箱",
+    "plan": "当前方案",
+    "usedToday": "今日已用 {count} 次",
+    "upgrade": "升级月度会员",
     "email": "登录邮箱"
   },
   "common": {

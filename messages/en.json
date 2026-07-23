@@ -53,12 +53,40 @@
     "signUp": "Sign up",
     "forgotPassword": "Forgot password"
   },
+  "pricing": {
+    "title": "Choose your plan",
+    "subtitle": "Start free, upgrade anytime",
+    "comingSoon": "Payment integration coming soon!",
+    "free": {
+      "name": "Free",
+      "price": "Free",
+      "period": "forever",
+      "free_1": "3 analyses per day",
+      "free_2": "Last 10 records kept",
+      "free_3": "Basic emotion insights"
+    },
+    "monthly": {
+      "name": "Monthly",
+      "badge": "Popular",
+      "period": "month",
+      "price": "$5.9",
+      "monthly_1": "Unlimited analyses",
+      "monthly_2": "Full history",
+      "monthly_3": "In-depth emotion details",
+      "monthly_4": "TTS voice playback (coming soon)",
+      "cta": "Upgrade to Monthly",
+      "ctaSignUp": "Sign up to upgrade"
+    }
+  },
   "profile": {
     "title": "Profile",
     "desc": "Set your display name and preferences",
     "nickname": "Display name",
     "nicknamePlaceholder": "Give yourself a nickname!",
     "nicknameHint": "Up to 20 characters, shown in the top right instead of your email",
+    "plan": "Current plan",
+    "usedToday": "{count} used today",
+    "upgrade": "Upgrade to Monthly",
     "email": "Login email"
   },
   "common": {
