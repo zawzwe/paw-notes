@@ -3,6 +3,28 @@
     "title": "🐾 PawNotes",
     "subtitle": "宠物声音日记，读懂它们的心声"
   },
+  "animal": {
+    "select": "选择你的宠物",
+    "cat": "猫咪 🐱",
+    "dog": "狗狗 🐶"
+  },
+  "recording": {
+    "tapToRecord": "点击录音",
+    "recording": "录音中...",
+    "maxDuration": "最长 30 秒",
+    "stopRecording": "点击停止",
+    "uploadFile": "或从文件上传",
+    "preview": "录音预览",
+    "reRecord": "重新录制",
+    "analyze": "开始分析"
+  },
+  "result": {
+    "analyzing": "正在分析宠物声音...",
+    "emotion": "情绪",
+    "confidence": "置信度",
+    "playTTS": "播放语音",
+    "noResult": "尚未分析"
+  },
   "nav": {
     "history": "历史记录",
     "profile": "个人设置"

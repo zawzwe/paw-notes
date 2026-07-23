@@ -3,6 +3,28 @@
     "title": "🐾 PawNotes",
     "subtitle": "Hear what your pet is saying — decode their sounds and emotions"
   },
+  "animal": {
+    "select": "Choose your pet",
+    "cat": "Cat 🐱",
+    "dog": "Dog 🐶"
+  },
+  "recording": {
+    "tapToRecord": "Tap to record",
+    "recording": "Recording...",
+    "maxDuration": "Up to 30 seconds",
+    "stopRecording": "Tap to stop",
+    "uploadFile": "Or upload a file",
+    "preview": "Preview",
+    "reRecord": "Record again",
+    "analyze": "Analyze"
+  },
+  "result": {
+    "analyzing": "Listening to your pet...",
+    "emotion": "Emotion",
+    "confidence": "Confidence",
+    "playTTS": "Play voice",
+    "noResult": "No results yet"
+  },
   "nav": {
     "history": "History",
     "profile": "Profile"
