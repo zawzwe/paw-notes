@@ -26,6 +26,8 @@ export function HomeContent() {
   const recording = useRecording({ maxDuration: 30 });
   const { isLoggedIn, loading: authLoading } = useAuth();
   const [wasSaved, setWasSaved] = useState(false);
+  const [dailyRemaining, setDailyRemaining] = useState<number | null>(null);
+  const [userPlan, setUserPlan] = useState<string>("free");
   const [analyzeState, setAnalyzeState] = useState<AnalyzeState>({
     loading: false,
     error: null,
@@ -71,10 +73,21 @@ export function HomeContent() {
       const result = await response.json();
 
       if (!response.ok) {
+        if (result.error === "free_limit_reached") {
+          setAnalyzeState({
+            loading: false,
+            error: result.message,
+            data: null,
+          });
+          setDailyRemaining(0);
+          return;
+        }
         throw new Error(result.error || "Analysis failed");
       }
 
       setWasSaved(result.recorded ?? false);
+      setDailyRemaining(result.dailyRemaining ?? null);
+      setUserPlan(result.plan ?? "free");
 
       setAnalyzeState({
         loading: false,
@@ -99,6 +112,28 @@ export function HomeContent() {
 
   return (
     <div className="flex-1 w-full max-w-md mx-auto flex flex-col gap-8 px-4 py-8">
+      {/* ── 用量 & 计划 ── */}
+      {isLoggedIn && userPlan === "free" && dailyRemaining != null && (
+        <div className="flex items-center justify-between text-xs bg-muted/50 rounded-lg px-4 py-2">
+          <span className="text-muted-foreground">
+            {locale === "zh" ? "今日剩余" : "Remaining today"}:{" "}
+            <strong className="text-foreground">{dailyRemaining}</strong>/3
+          </span>
+          <button
+            onClick={() =>
+              alert(
+                locale === "zh"
+                  ? "即将推出月度会员（¥9.9/月），畅享无限分析！"
+                  : "Monthly plan coming soon ($5.9/mo) — unlimited analyses!"
+              )
+            }
+            className="text-amber-600 dark:text-amber-400 font-medium hover:underline"
+          >
+            {locale === "zh" ? "升级" : "Upgrade"}
+          </button>
+        </div>
+      )}
+
       {/* ── 动物选择区 ── */}
       <AnimalSelector
         selected={selectedAnimal}

@@ -49,6 +49,35 @@ export async function POST(request: NextRequest) {
     const { data: userData } = await authClient.auth.getClaims();
     const userId = userData?.claims?.sub;
 
+    // 2. Billing check for authenticated users
+    let userProfile: { plan: string; daily_usage_count: number; daily_usage_date: string | null } | null = null;
+    if (userId) {
+      const { data: profile } = await serviceClient
+        .from("profiles")
+        .select("plan, daily_usage_count, daily_usage_date")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      userProfile = profile ?? null;
+
+      if (userProfile && userProfile.plan === "free") {
+        const today = new Date().toISOString().split("T")[0];
+        const usageDate = userProfile.daily_usage_date;
+        const currentCount =
+          usageDate === today ? userProfile.daily_usage_count : 0;
+
+        if (currentCount >= 3) {
+          return NextResponse.json(
+            {
+              error: "free_limit_reached",
+              message: "今日免费次数已用完（3次），升级月度会员畅享无限分析",
+            },
+            { status: 429 }
+          );
+        }
+      }
+    }
+
     // 3. Upload audio file to Supabase Storage
     const fileBuffer = Buffer.from(await file.arrayBuffer());
     // Detect MIME from extension (FormData may not set proper MIME)
@@ -200,9 +229,30 @@ export async function POST(request: NextRequest) {
         .from("recordings")
         .update({ status: "completed", updated_at: new Date().toISOString() })
         .eq("id", recordingId);
+
+      // Increment daily usage
+      const today = new Date().toISOString().split("T")[0];
+      if (userProfile && userProfile.plan === "free") {
+        await serviceClient
+          .from("profiles")
+          .update({
+            daily_usage_count:
+              (userProfile.daily_usage_date === today
+                ? userProfile.daily_usage_count
+                : 0) + 1,
+            daily_usage_date: today,
+          })
+          .eq("user_id", userId);
+      }
     }
 
     // 10. Return result
+    const now = new Date().toISOString().split("T")[0];
+    const dailyRemaining =
+      userProfile?.plan === "free"
+        ? Math.max(0, 3 - (now === userProfile.daily_usage_date ? userProfile.daily_usage_count + 1 : 1))
+        : null;
+
     return NextResponse.json({
       success: true,
       recording_id: recordingId,
@@ -212,6 +262,8 @@ export async function POST(request: NextRequest) {
       text_zh: analysisResult.translated_text_zh,
       tts_url: ttsUrl,
       recorded: !!recordingId,
+      plan: userProfile?.plan || "free",
+      dailyRemaining,
     });
   } catch (err) {
     console.error("Unhandled API error:", err);
