@@ -2,12 +2,15 @@
 
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { Mic, Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 import { AnimalSelector, type Animal } from "@/components/recording/animal-selector";
+import { Recorder } from "@/components/recording/recorder";
+import { useRecording } from "@/hooks/use-recording";
 
 export function HomeContent() {
   const t = useTranslations();
   const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
+  const recording = useRecording({ maxDuration: 30 });
 
   return (
     <div className="flex-1 w-full max-w-md mx-auto flex flex-col gap-8 px-4 py-8">
@@ -18,20 +21,23 @@ export function HomeContent() {
       />
 
       {/* ── 录音操作区 ── */}
-      <section className="flex flex-col items-center gap-4">
-        {/* 大圆录音按钮 */}
-        <button
-          disabled={!selectedAnimal}
-          className="w-28 h-28 rounded-full bg-red-500 hover:bg-red-600 disabled:bg-muted disabled:cursor-not-allowed flex items-center justify-center shadow-lg hover:shadow-xl transition-all active:scale-95"
-          aria-label={t("recording.tapToRecord")}
-        >
-          <Mic className="w-10 h-10 text-white" />
-        </button>
-        <p className="text-xs text-muted-foreground">
-          {t("recording.maxDuration")}
+      <Recorder
+        state={recording.state}
+        duration={recording.duration}
+        audioUrl={recording.audioUrl}
+        onStart={recording.startRecording}
+        onStop={recording.stopRecording}
+        onReset={recording.reset}
+        disabled={!selectedAnimal}
+      />
+      {recording.error && (
+        <p className="text-xs text-red-500 text-center -mt-4">
+          {recording.error}
         </p>
+      )}
 
-        {/* 文件上传 */}
+      {/* ── 文件上传区（placeholder，第七步实现） ── */}
+      <section className="flex flex-col items-center">
         <button
           disabled={!selectedAnimal}
           className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
@@ -41,7 +47,7 @@ export function HomeContent() {
         </button>
       </section>
 
-      {/* ── 结果展示区 ── */}
+      {/* ── 结果展示区（placeholder，第九步实现） ── */}
       <section className="flex flex-col gap-3">
         <h2 className="text-sm font-medium text-muted-foreground text-center">
           {t("result.noResult")}
