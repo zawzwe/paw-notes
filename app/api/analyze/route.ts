@@ -149,6 +149,7 @@ export async function POST(request: NextRequest) {
     let ttsPath: string | null = null;
     try {
       const ttsBuffer = await generateTTS(textForTTS, locale as "zh" | "en");
+      if (!ttsBuffer) { ttsPath = null; } else {
       const ttsFileName = `tts-${Date.now()}.mp3`;
       ttsPath = `${userId || "anonymous"}/${ttsFileName}`;
 
@@ -163,6 +164,7 @@ export async function POST(request: NextRequest) {
         console.error("TTS upload error:", ttsUploadError);
         ttsPath = null; // Continue without TTS if upload fails
       }
+      } // end else (ttsBuffer exists)
     } catch (ttsError) {
       console.error("TTS error:", ttsError);
       // Continue without TTS

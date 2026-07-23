@@ -89,34 +89,16 @@ export async function analyzePetAudio(
 
 /**
  * Generate TTS audio from text using Qwen TTS
+ * NOTE: TTS endpoint is not yet configured — returns null gracefully.
+ * TODO: Configure correct DashScope TTS API endpoint.
  */
 export async function generateTTS(
-  text: string,
-  locale: "zh" | "en"
-): Promise<Buffer> {
-  const apiKey = process.env.ALIYUN_BAILIAN_API_KEY;
-  if (!apiKey) throw new Error("ALIYUN_BAILIAN_API_KEY is not configured");
-
-  const response = await fetch(`${BAILIAN_BASE}/audio/speech`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: "qwen3-tts-flash",
-      input: text,
-      voice: locale === "zh" ? "Cherry" : "Bella",
-      response_format: "mp3",
-      speed: 1.0,
-    }),
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`TTS API error ${response.status}: ${errorText}`);
-  }
-
-  const arrayBuffer = await response.arrayBuffer();
-  return Buffer.from(arrayBuffer);
+  _text: string,
+  _locale: "zh" | "en"
+): Promise<Buffer | null> {
+  // TTS API endpoint pending configuration
+  // The OpenAI-compatible /v1/audio/speech endpoint returns 404
+  // DashScope native TTS endpoint format needs verification
+  console.warn("TTS is not yet configured — skipping audio synthesis");
+  return null;
 }
