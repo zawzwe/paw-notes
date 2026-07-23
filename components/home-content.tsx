@@ -3,47 +3,19 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Mic, Upload } from "lucide-react";
-
-type Animal = "cat" | "dog" | null;
-type Step = "select" | "record" | "result";
+import { AnimalSelector, type Animal } from "@/components/recording/animal-selector";
 
 export function HomeContent() {
   const t = useTranslations();
-  const [selectedAnimal, setSelectedAnimal] = useState<Animal>(null);
-  const [step, setStep] = useState<Step>("select");
+  const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
 
   return (
     <div className="flex-1 w-full max-w-md mx-auto flex flex-col gap-8 px-4 py-8">
       {/* ── 动物选择区 ── */}
-      <section>
-        <h2 className="text-sm font-medium text-muted-foreground mb-3 text-center">
-          {t("animal.select")}
-        </h2>
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={() => setSelectedAnimal("cat")}
-            className={`flex flex-col items-center justify-center gap-2 p-6 rounded-2xl border-2 transition-all min-h-[120px] ${
-              selectedAnimal === "cat"
-                ? "border-amber-400 bg-amber-50 dark:bg-amber-950/30"
-                : "border-muted-foreground/20 hover:border-muted-foreground/40"
-            }`}
-          >
-            <span className="text-4xl">🐱</span>
-            <span className="text-sm font-medium">{t("animal.cat")}</span>
-          </button>
-          <button
-            onClick={() => setSelectedAnimal("dog")}
-            className={`flex flex-col items-center justify-center gap-2 p-6 rounded-2xl border-2 transition-all min-h-[120px] ${
-              selectedAnimal === "dog"
-                ? "border-amber-400 bg-amber-50 dark:bg-amber-950/30"
-                : "border-muted-foreground/20 hover:border-muted-foreground/40"
-            }`}
-          >
-            <span className="text-4xl">🐶</span>
-            <span className="text-sm font-medium">{t("animal.dog")}</span>
-          </button>
-        </div>
-      </section>
+      <AnimalSelector
+        selected={selectedAnimal}
+        onSelect={setSelectedAnimal}
+      />
 
       {/* ── 录音操作区 ── */}
       <section className="flex flex-col items-center gap-4">
