@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { AuthButton } from "@/components/auth-button";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { HistoryList } from "@/components/history/history-list";
-import { ThemeSwitcher } from "@/components/theme-switcher";
+import { SiteFooter } from "@/components/site-footer";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -39,10 +39,7 @@ export default async function HistoryPage() {
           <HistoryList />
         </div>
 
-        <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-8 mt-auto">
-          <p>{t("footer.poweredBy")}</p>
-          <ThemeSwitcher />
-        </footer>
+        <SiteFooter />
       </div>
     </main>
   );

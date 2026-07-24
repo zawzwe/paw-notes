@@ -61,7 +61,10 @@
     "pricing": "Pricing"
   },
   "footer": {
-    "poweredBy": "Powered by Supabase & Qwen"
+    "poweredBy": "Powered by Supabase & Qwen",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contact us"
   },
   "auth": {
     "login": "Log in",
@@ -104,6 +107,46 @@
     "usedToday": "{count} used today",
     "upgrade": "Upgrade to Monthly",
     "email": "Login email"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: July 24, 2026",
+    "s1Title": "Information We Collect",
+    "s1": "When you register, we collect your email address and any nickname you provide. When using the analysis feature, we collect audio files you upload or record, along with their analysis results.",
+    "s2Title": "How We Use Information",
+    "s2": "Audio files are used solely to provide emotion analysis. Your email is used for account management and service notifications. We do not sell your data to third parties.",
+    "s3Title": "Data Storage & Security",
+    "s3": "All data is encrypted and stored on Supabase servers. Audio files are encrypted in transit and at rest. We employ industry-standard security measures to protect your data.",
+    "s4Title": "Data Retention & Deletion",
+    "s4": "Free users retain their last 10 analysis records. Paid users retain their complete history. You may delete your account at any time; all associated data will be purged within 30 days.",
+    "s5Title": "Cookie Policy",
+    "s5": "We use essential cookies to maintain your login session and app functionality. We do not use tracking or advertising cookies.",
+    "s6Title": "Third-Party Services",
+    "s6": "We use: Supabase (data storage & authentication) and Alibaba Cloud Qwen (AI analysis). These providers adhere to their own privacy policies.",
+    "s7Title": "Contact Us",
+    "s7": "For privacy-related inquiries, email us at support@paw-notes.app."
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated: July 24, 2026",
+    "s1Title": "Service Description",
+    "s1": "PawNotes provides AI-powered pet vocalization emotion analysis. Results are for entertainment and reference only and do not constitute veterinary diagnosis or professional advice.",
+    "s2Title": "Account Registration",
+    "s2": "You must provide a valid email address to register. You are responsible for all activity under your account. Please safeguard your login credentials.",
+    "s3Title": "AI Model Disclosure",
+    "s3": "This service uses Alibaba Cloud's Qwen (Tongyi Qianwen) multimodal large language model for audio analysis. AI results are based on model training data and may not always be accurate. We continuously improve our models.",
+    "s4Title": "Payment Terms",
+    "s4": "The Free plan provides 3 analyses per day. The Monthly plan provides unlimited analyses at $5.9/month (international) or ¥9.9/month (China). Fees are non-refundable unless required by law. You may cancel before the next billing period.",
+    "s5Title": "Acceptable Use Policy",
+    "s5": "You agree not to upload: illegal or infringing content, malware or viruses, content violating others' privacy, or any form of spam or abusive content. We reserve the right to terminate accounts violating this policy.",
+    "s6Title": "Intellectual Property",
+    "s6": "The PawNotes name, logo, website design, and code are our intellectual property. Audio files you upload remain yours. Analysis results are yours to use.",
+    "s7Title": "Disclaimer",
+    "s7": "The service is provided \"as is\" without warranties of any kind. We do not guarantee uninterrupted or error-free service. AI analysis results are for entertainment purposes and should not be the sole basis for pet health decisions.",
+    "s8Title": "Limitation of Liability",
+    "s8": "To the fullest extent permitted by law, we shall not be liable for any indirect, incidental, or consequential damages arising from your use of the service.",
+    "s9Title": "Contact",
+    "s9": "For any questions, contact:"
   },
   "common": {
     "loading": "Loading...",
