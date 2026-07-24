@@ -14,7 +14,7 @@ export async function SiteFooter() {
         <Link href="/terms" className="hover:text-foreground transition-colors">
           {t("footer.terms")}
         </Link>
-        <a href="mailto:support@paw-notes.app" className="hover:text-foreground transition-colors">
+        <a href="mailto:marson.mhs@gmail.com" className="hover:text-foreground transition-colors">
           {t("footer.contact")}
         </a>
       </div>

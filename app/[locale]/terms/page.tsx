@@ -52,7 +52,7 @@ export default async function TermsPage() {
           <p>{t("terms.s8")}</p>
 
           <h2>9. {t("terms.s9Title")}</h2>
-          <p>{t("terms.s9")} support@paw-notes.app</p>
+          <p>{t("terms.s9")}</p>
         </div>
 
         <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-8 mt-auto">
