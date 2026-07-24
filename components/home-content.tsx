@@ -9,6 +9,7 @@ import { AnimalSelector, type Animal } from "@/components/recording/animal-selec
 import { Recorder } from "@/components/recording/recorder";
 import { AudioUploader } from "@/components/recording/audio-uploader";
 import { LureBar } from "@/components/recording/lure-bar";
+import { PetSelector } from "@/components/recording/pet-selector";
 import { AnalysisResult, type AnalysisData } from "@/components/result/analysis-result";
 import { useRecording } from "@/hooks/use-recording";
 import { useAuth } from "@/hooks/use-auth";
@@ -26,8 +27,10 @@ export function HomeContent() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadedDuration, setUploadedDuration] = useState(0);
   const recording = useRecording({ maxDuration: 30 });
-  const { isLoggedIn, loading: authLoading } = useAuth();
+  const { isLoggedIn, loading: authLoading, user } = useAuth();
   const [wasSaved, setWasSaved] = useState(false);
+  const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
+  const [selectedPetSpecies, setSelectedPetSpecies] = useState<Animal | null>(null);
   const [dailyRemaining, setDailyRemaining] = useState<number | null>(null);
   const [userPlan, setUserPlan] = useState<string>("free");
 
@@ -92,6 +95,7 @@ export function HomeContent() {
         audioBlob ? "realtime" : "upload"
       );
       formData.append("locale", locale);
+      if (selectedPetId) formData.append("pet_id", selectedPetId);
 
       const response = await fetch("/api/analyze", {
         method: "POST",
@@ -161,10 +165,26 @@ export function HomeContent() {
         </div>
       )}
 
+      {/* ── 宠物选择 ── */}
+      {isLoggedIn && (
+        <PetSelector
+          userId={user?.id}
+          selectedPetId={selectedPetId}
+          onSelectPet={(pet) => {
+            setSelectedPetId(pet.id);
+            setSelectedPetSpecies(pet.species);
+            setSelectedAnimal(pet.species);
+          }}
+        />
+      )}
+
       {/* ── 动物选择区 ── */}
       <AnimalSelector
         selected={selectedAnimal}
-        onSelect={setSelectedAnimal}
+        onSelect={(a) => {
+          setSelectedAnimal(a);
+          setSelectedPetSpecies(a);
+        }}
       />
 
       {/* ── 吸引声音 ── */}

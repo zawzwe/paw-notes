@@ -19,6 +19,7 @@ interface HistoryItem {
   status: string;
   created_at: string;
   analysis: AnalysisRow[] | AnalysisRow | null;
+  pets: { name: string; avatar: string | null } | null;
 }
 
 function formatTime(dateStr: string, locale: string) {
@@ -77,7 +78,8 @@ export function HistoryList() {
       .from("recordings")
       .select(`
         id, species, source, status, created_at,
-        analysis:analyses(emotion_label, emotion_confidence, translated_text, translated_text_zh)
+        analysis:analyses(emotion_label, emotion_confidence, translated_text, translated_text_zh),
+        pets(name, avatar)
       `)
       .order("created_at", { ascending: false })
       .range(pageNum * PAGE_SIZE, (pageNum + 1) * PAGE_SIZE - 1);
@@ -173,14 +175,14 @@ export function HistoryList() {
               <div key={item.id} className="flex items-start gap-2.5 group">
                 {/* Avatar */}
                 <div className="shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/20 flex items-center justify-center text-lg mt-1">
-                  {petAvatar(item.species)}
+                  {item.pets?.avatar || petAvatar(item.species)}
                 </div>
 
                 <div className="flex-1 flex flex-col min-w-0">
                   {/* Name + time */}
                   <div className="flex items-baseline gap-2 mb-1">
                     <span className="text-xs font-medium text-amber-700 dark:text-amber-400">
-                      {petName(item.species, locale)}
+                      {item.pets?.name || petName(item.species, locale)}
                     </span>
                     <span className="text-[10px] text-muted-foreground/50">
                       {formatTime(item.created_at, locale)}

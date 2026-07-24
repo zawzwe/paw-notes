@@ -9,6 +9,12 @@
     "title": "🐾 PawNotes",
     "subtitle": "Hear what your pet is saying — decode their sounds and emotions"
   },
+  "pet": {
+    "deleteConfirm": "Delete {name}?",
+    "deleteHint": "Double click a pet to delete",
+    "namePlaceholder": "Name",
+    "hint": "Choose your fur baby"
+  },
   "animal": {
     "select": "Choose your pet",
     "cat": "Cat",

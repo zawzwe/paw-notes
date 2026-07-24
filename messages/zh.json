@@ -9,6 +9,12 @@
     "title": "🐾 PawNotes",
     "subtitle": "宠物声音日记，读懂它们的心声"
   },
+  "pet": {
+    "deleteConfirm": "确定要删除{name}吗？",
+    "deleteHint": "双击宠物可删除",
+    "namePlaceholder": "起个名字",
+    "hint": "选择你想了解的毛孩子"
+  },
   "animal": {
     "select": "选择你的宠物",
     "cat": "猫咪",

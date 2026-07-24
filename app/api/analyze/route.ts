@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
     const species = formData.get("species") as string | null;
     const source = formData.get("source") as string | null;
     const locale = (formData.get("locale") as string) || "zh";
+    const petId = (formData.get("pet_id") as string) || null;
 
     // Validate
     if (!file) {
@@ -144,6 +145,7 @@ export async function POST(request: NextRequest) {
           species,
           file_path: filePath,
           status: "processing",
+          pet_id: petId || null,
         })
         .select("id")
         .single();
