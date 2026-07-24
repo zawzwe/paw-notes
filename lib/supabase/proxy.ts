@@ -53,6 +53,8 @@ export async function updateSession(
     pathname.match(/^\/(en|zh)\/?$/) ||
     pathname.startsWith("/auth") ||
     pathname.match(/^\/(en|zh)\/auth/) ||
+    pathname.startsWith("/app") ||
+    pathname.match(/^\/(en|zh)\/app/) ||
     pathname.startsWith("/pricing") ||
     pathname.match(/^\/(en|zh)\/pricing/);
 

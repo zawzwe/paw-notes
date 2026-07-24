@@ -1,4 +1,10 @@
 {
+  "landing": {
+    "title": "Understand your pet",
+    "subtitle": "AI-powered emotion recognition for every bark and meow",
+    "cta": "Tap the cat to start",
+    "tagline": "Qwen AI · Science-backed · Privacy-first"
+  },
   "home": {
     "title": "🐾 PawNotes",
     "subtitle": "Hear what your pet is saying — decode their sounds and emotions"
@@ -42,7 +48,8 @@
   },
   "nav": {
     "history": "History",
-    "profile": "Profile"
+    "profile": "Profile",
+    "pricing": "Pricing"
   },
   "footer": {
     "poweredBy": "Powered by Supabase & Qwen"

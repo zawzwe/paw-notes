@@ -1,4 +1,10 @@
 {
+  "landing": {
+    "title": "听懂宠物的心声",
+    "subtitle": "AI 情绪识别，让每一声呼唤都被理解",
+    "cta": "点击猫咪开始",
+    "tagline": "Qwen 大模型驱动 · 行为科学支撑 · 数据安全保障"
+  },
   "home": {
     "title": "🐾 PawNotes",
     "subtitle": "宠物声音日记，读懂它们的心声"
@@ -42,7 +48,8 @@
   },
   "nav": {
     "history": "历史记录",
-    "profile": "个人设置"
+    "profile": "个人设置",
+    "pricing": "套餐"
   },
   "footer": {
     "poweredBy": "基于 Supabase & Qwen 构建"
