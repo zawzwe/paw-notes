@@ -56,17 +56,17 @@ export async function POST(request: NextRequest) {
     const userId = userData?.claims?.sub;
 
     // 2. Billing check for authenticated users
-    let userProfile: { plan: string; daily_usage_count: number; daily_usage_date: string | null } | null = null;
+    let userProfile: { plan: string; daily_usage_count: number; daily_usage_date: string | null; is_admin: boolean } | null = null;
     if (userId) {
       const { data: profile } = await serviceClient
         .from("profiles")
-        .select("plan, daily_usage_count, daily_usage_date")
+        .select("plan, daily_usage_count, daily_usage_date, is_admin")
         .eq("user_id", userId)
         .maybeSingle();
 
       userProfile = profile ?? null;
 
-      if (userProfile && userProfile.plan === "free") {
+      if (userProfile && !userProfile.is_admin && userProfile.plan === "free") {
         const today = new Date().toISOString().split("T")[0];
         const usageDate = userProfile.daily_usage_date;
         const currentCount =
