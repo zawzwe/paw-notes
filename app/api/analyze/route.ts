@@ -96,7 +96,8 @@ export async function POST(request: NextRequest) {
     const fileName = `${Date.now()}-${crypto.randomUUID()}.${ext}`;
     const filePath = `${userId || "anonymous"}/${fileName}`;
 
-    const { error: uploadError } = await serviceClient.storage
+    // Use auth client for storage (works with RLS + user JWT)
+    const { error: uploadError } = await authClient.storage
       .from("audio-uploads")
       .upload(filePath, fileBuffer, {
         contentType: mimeType,
@@ -112,7 +113,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Get signed URL (valid 5 min) for Qwen API
-    const { data: signedUrlData } = await serviceClient.storage
+    const { data: signedUrlData } = await authClient.storage
       .from("audio-uploads")
       .createSignedUrl(filePath, 300);
 
@@ -188,7 +189,7 @@ export async function POST(request: NextRequest) {
       const ttsFileName = `tts-${Date.now()}.mp3`;
       ttsPath = `${userId || "anonymous"}/${ttsFileName}`;
 
-      const { error: ttsUploadError } = await serviceClient.storage
+      const { error: ttsUploadError } = await authClient.storage
         .from("tts-output")
         .upload(ttsPath, ttsBuffer, {
           contentType: "audio/mpeg",
@@ -208,7 +209,7 @@ export async function POST(request: NextRequest) {
     // 8. Get TTS signed URL
     let ttsUrl: string | null = null;
     if (ttsPath) {
-      const { data: ttsSigned } = await serviceClient.storage
+      const { data: ttsSigned } = await authClient.storage
         .from("tts-output")
         .createSignedUrl(ttsPath, 3600); // 1 hour
       ttsUrl = ttsSigned?.signedUrl || null;
