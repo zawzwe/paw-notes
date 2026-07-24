@@ -64,9 +64,19 @@
     "noData": "分析数据未保存，请重新分析"
   },
   "nav": {
+    "analyze": "分析",
     "history": "历史记录",
+    "trends": "趋势",
     "profile": "个人设置",
     "pricing": "套餐"
+  },
+  "trends": {
+    "title": "情绪趋势",
+    "total": "总分析",
+    "topEmotion": "最常见",
+    "happyDays": "开心天数",
+    "moodTimeline": "心情日历",
+    "noData": "还没有足够的数据，多分析几次吧～"
   },
   "footer": {
     "poweredBy": "基于 Supabase & Qwen 构建",

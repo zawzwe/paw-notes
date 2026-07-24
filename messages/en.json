@@ -64,9 +64,19 @@
     "noData": "Analysis data wasn't saved — please try again"
   },
   "nav": {
+    "analyze": "Analyze",
     "history": "History",
+    "trends": "Trends",
     "profile": "Profile",
     "pricing": "Pricing"
+  },
+  "trends": {
+    "title": "Mood Trends",
+    "total": "Total",
+    "topEmotion": "Top",
+    "happyDays": "Happy days",
+    "moodTimeline": "Mood Calendar",
+    "noData": "Not enough data yet — do a few more analyses!"
   },
   "footer": {
     "poweredBy": "Powered by Supabase & Qwen",

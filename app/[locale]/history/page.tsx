@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { AuthButton } from "@/components/auth-button";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { HistoryList } from "@/components/history/history-list";
+import { BottomNav } from "@/components/bottom-nav";
 import { SiteFooter } from "@/components/site-footer";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -14,17 +15,7 @@ export default async function HistoryPage() {
       <div className="flex-1 w-full flex flex-col items-center">
         <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
           <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
-            <div className="flex items-center gap-5">
-              <Link href={"/"} className="font-semibold">
-                {t("home.title")}
-              </Link>
-              <Link
-                href={"/history"}
-                className="text-foreground font-medium"
-              >
-                {t("nav.history")}
-              </Link>
-            </div>
+            <Link href={"/"} className="font-semibold">{t("home.title")}</Link>
             <div className="flex items-center gap-3">
               <LocaleSwitcher />
               <Suspense>
@@ -39,6 +30,7 @@ export default async function HistoryPage() {
           <HistoryList />
         </div>
 
+        <BottomNav />
         <SiteFooter />
       </div>
     </main>
