@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { AnimalSelector, type Animal } from "@/components/recording/animal-selector";
 import { Recorder } from "@/components/recording/recorder";
 import { AudioUploader } from "@/components/recording/audio-uploader";
+import { LureBar } from "@/components/recording/lure-bar";
 import { AnalysisResult, type AnalysisData } from "@/components/result/analysis-result";
 import { useRecording } from "@/hooks/use-recording";
 import { useAuth } from "@/hooks/use-auth";
@@ -165,6 +166,9 @@ export function HomeContent() {
         selected={selectedAnimal}
         onSelect={setSelectedAnimal}
       />
+
+      {/* ── 吸引声音 ── */}
+      {selectedAnimal && <LureBar animal={selectedAnimal} />}
 
       {/* ── 录音操作区 ── */}
       <Recorder

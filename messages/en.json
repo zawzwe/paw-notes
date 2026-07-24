@@ -14,6 +14,14 @@
     "cat": "Cat 🐱",
     "dog": "Dog 🐶"
   },
+  "lure": {
+    "title": "Sounds to get their attention",
+    "meow": "Meow",
+    "bark": "Bark",
+    "bird": "Bird",
+    "squeak": "Squeak",
+    "purr": "Purr"
+  },
   "recording": {
     "tapToRecord": "Tap to record",
     "recording": "Recording...",

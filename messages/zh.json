@@ -14,6 +14,14 @@
     "cat": "猫咪 🐱",
     "dog": "狗狗 🐶"
   },
+  "lure": {
+    "title": "吸引小主子的声音",
+    "meow": "猫叫",
+    "bark": "狗叫",
+    "bird": "鸟叫",
+    "squeak": "玩具",
+    "purr": "呼噜"
+  },
   "recording": {
     "tapToRecord": "点击录音",
     "recording": "录音中...",
