@@ -11,8 +11,10 @@
   },
   "animal": {
     "select": "Choose your pet",
-    "cat": "Cat 🐱",
-    "dog": "Dog 🐶"
+    "cat": "Cat",
+    "dog": "Dog",
+    "catDesc": "Meow",
+    "dogDesc": "Woof"
   },
   "lure": {
     "title": "Sounds to get their attention",

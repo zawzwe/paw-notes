@@ -9,38 +9,62 @@ interface AnimalSelectorProps {
   onSelect: (animal: Animal) => void;
 }
 
-const animals: { id: Animal; emoji: string }[] = [
-  { id: "cat", emoji: "🐱" },
-  { id: "dog", emoji: "🐶" },
+const animals = [
+  {
+    id: "cat" as Animal,
+    emoji: "🐱",
+    gradient: "from-orange-50 to-amber-100 dark:from-orange-950/20 dark:to-amber-950/10",
+    shadow: "shadow-lg shadow-orange-100/40 dark:shadow-orange-900/10",
+  },
+  {
+    id: "dog" as Animal,
+    emoji: "🐶",
+    gradient: "from-sky-50 to-blue-100 dark:from-sky-950/20 dark:to-blue-950/10",
+    shadow: "shadow-lg shadow-sky-100/40 dark:shadow-sky-900/10",
+  },
 ];
 
 export function AnimalSelector({ selected, onSelect }: AnimalSelectorProps) {
   const t = useTranslations();
 
   return (
-    <section>
-      <h2 className="text-sm font-medium text-muted-foreground mb-3 text-center">
+    <section className="flex flex-col items-center gap-4">
+      <h2 className="text-sm font-medium text-muted-foreground">
         {t("animal.select")}
       </h2>
-      <div className="grid grid-cols-2 gap-3">
-        {animals.map(({ id, emoji }) => {
+      <div className="flex items-center gap-10">
+        {animals.map(({ id, emoji, gradient, shadow }) => {
           const isSelected = selected === id;
           return (
             <button
               key={id}
               onClick={() => onSelect(id)}
-              className={`flex flex-col items-center justify-center gap-2 p-6 rounded-2xl border-2 transition-all duration-200 min-h-[120px] ${
-                isSelected
-                  ? "border-amber-400 bg-amber-50 dark:bg-amber-950/30 shadow-sm"
-                  : `border-muted-foreground/20 hover:border-muted-foreground/40 hover:shadow-sm ${
-                      id === "cat"
-                        ? "bg-orange-50/60 dark:bg-orange-950/10"
-                        : "bg-sky-50/60 dark:bg-sky-950/10"
-                    }`
-              }`}
+              className={`
+                flex flex-col items-center gap-3 transition-all duration-300 ease-out
+                ${isSelected ? "scale-105" : "hover:scale-105 active:scale-95"}
+              `}
             >
-              <span className="text-5xl">{emoji}</span>
-              <span className="text-sm font-medium">
+              <div
+                className={`
+                  w-28 h-28 rounded-full bg-gradient-to-b ${gradient} ${shadow}
+                  flex items-center justify-center
+                  transition-all duration-300
+                  ${isSelected ? "ring-2 ring-amber-400/60" : ""}
+                `}
+              >
+                <span
+                  className={`text-5xl transition-transform duration-300 ${
+                    isSelected ? "scale-110" : ""
+                  }`}
+                >
+                  {emoji}
+                </span>
+              </div>
+              <span
+                className={`text-sm font-medium transition-colors ${
+                  isSelected ? "text-foreground" : "text-muted-foreground"
+                }`}
+              >
                 {t(`animal.${id}`)}
               </span>
             </button>
