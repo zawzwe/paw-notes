@@ -1,4 +1,5 @@
 const BAILIAN_BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1";
+const WORKSPACE_BASE = "https://ws-iacn18nt1kaevgro.cn-beijing.maas.aliyuncs.com/compatible-mode/v1";
 
 interface QwenAnalysisResult {
   emotion_label: string;
@@ -14,29 +15,22 @@ async function getAudioDescription(audioUrl: string): Promise<string> {
   const apiKey = process.env.ALIYUN_BAILIAN_API_KEY;
   if (!apiKey) throw new Error("ALIYUN_BAILIAN_API_KEY is not configured");
 
-  const response = await fetch(`${BAILIAN_BASE}/chat/completions`, {
+  const response = await fetch(`${WORKSPACE_BASE}/chat/completions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: "qwen3-omni-flash",
+      model: "qwen3-omni-30b-a3b-captioner",
       messages: [{
         role: "user",
-        content: [
-          {
-            type: "input_audio",
-            input_audio: { data: audioUrl },
-          },
-          {
-            type: "text",
-            text: "请用1-2句话客观描述这段动物叫声的声学特征：音高、节奏、时长、强度。不要猜测情绪，只描述声音本身。",
-          },
-        ],
+        content: [{
+          type: "input_audio",
+          input_audio: { data: audioUrl },
+        }],
       }],
       max_tokens: 200,
-      temperature: 0.3,
     }),
   });
 
