@@ -5,11 +5,17 @@ import { analyzePetAudio, generateTTS } from "@/lib/qwen";
 
 // Service role client for server-side operations (bypasses RLS)
 function createServiceClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  );
+  const url = (process.env.NEXT_PUBLIC_SUPABASE_URL || "").trim();
+  const key = (process.env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
+
+  if (!url || !key) {
+    console.error("[paw-notes] Missing Supabase env vars. URL:", !!url, "KEY:", !!key);
+    throw new Error("Supabase configuration is incomplete");
+  }
+
+  return createClient(url, key, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
 }
 
 export async function POST(request: NextRequest) {
