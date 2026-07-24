@@ -138,7 +138,12 @@ export function HomeContent() {
   }, [audioBlob, uploadedFile, selectedAnimal, locale]);
 
   return (
-    <div className="flex-1 w-full max-w-md mx-auto flex flex-col gap-8 px-4 py-8">
+    <div className="flex-1 w-full max-w-md mx-auto flex flex-col gap-8 px-4 py-8 relative overflow-visible">
+      {/* Decorative elements */}
+      <span className="absolute top-4 -left-2 text-2xl opacity-10 animate-float select-none pointer-events-none">🐾</span>
+      <span className="absolute top-20 right-2 text-xl opacity-10 animate-float select-none pointer-events-none" style={{ animationDelay: "1.3s" }}>🐾</span>
+      <span className="absolute bottom-60 -left-1 text-3xl opacity-10 animate-float select-none pointer-events-none" style={{ animationDelay: "0.7s" }}>🐾</span>
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full bg-gradient-to-br from-amber-200/40 via-orange-100/30 to-transparent dark:from-amber-800/15 dark:via-orange-900/10 dark:to-transparent blur-3xl pointer-events-none" />
       {/* ── 用量 & 计划 ── */}
       {isLoggedIn && userPlan === "free" && dailyRemaining != null && (
         <div className="flex items-center justify-between text-xs bg-muted/50 rounded-lg px-4 py-2">

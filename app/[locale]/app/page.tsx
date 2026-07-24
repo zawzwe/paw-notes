@@ -10,7 +10,7 @@ export default async function AppPage() {
   const t = await getTranslations();
 
   return (
-    <main className="min-h-screen flex flex-col items-center">
+    <main className="min-h-screen flex flex-col items-center bg-gradient-to-b from-amber-50 via-orange-50/50 to-background dark:from-amber-950/30 dark:via-orange-950/10 dark:to-background">
       <div className="flex-1 w-full flex flex-col items-center">
         <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
           <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
