@@ -124,6 +124,7 @@
     "plan": "Current plan",
     "usedToday": "{count} used today",
     "upgrade": "Upgrade to Monthly",
+    "replayGuide": "Replay onboarding",
     "email": "Login email"
   },
   "privacy": {
@@ -165,6 +166,17 @@
     "s8": "To the fullest extent permitted by law, we shall not be liable for any indirect, incidental, or consequential damages arising from your use of the service.",
     "s9Title": "Contact",
     "s9": "For any questions, contact: marson.mhs@gmail.com"
+  },
+  "onboarding": {
+    "skip": "Skip",
+    "next": "Next",
+    "start": "Get started",
+    "s0Title": "Name your fur baby",
+    "s0Desc": "Cat or dog? Give them a name and start your conversation journey",
+    "s1Title": "Hear what they're saying",
+    "s1Desc": "Record a sound or upload audio — AI translates your pet's voice",
+    "s2Title": "Every conversation saved",
+    "s2Desc": "All analyses are saved so you can track your pet's mood"
   },
   "common": {
     "loading": "Loading...",

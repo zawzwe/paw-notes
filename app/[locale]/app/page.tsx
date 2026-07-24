@@ -1,9 +1,10 @@
-import { getTranslations } from "next-intl/server";
 import { AuthButton } from "@/components/auth-button";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { HomeContent } from "@/components/home-content";
 import { BottomNav } from "@/components/bottom-nav";
+import { OnboardingWrapper } from "@/components/onboarding-wrapper";
 import { SiteFooter } from "@/components/site-footer";
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -25,6 +26,7 @@ export default async function AppPage() {
           </div>
         </nav>
 
+        <OnboardingWrapper />
         <HomeContent />
 
         <BottomNav />

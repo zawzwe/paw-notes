@@ -12,6 +12,7 @@ import { LureBar } from "@/components/recording/lure-bar";
 import { PetSelector } from "@/components/recording/pet-selector";
 import { AnalysisResult, type AnalysisData } from "@/components/result/analysis-result";
 import { useRecording } from "@/hooks/use-recording";
+import { ReplayOnboarding } from "@/components/replay-onboarding";
 import { useAuth } from "@/hooks/use-auth";
 
 type AnalyzeState = {
@@ -162,6 +163,13 @@ export function HomeContent() {
           >
             {locale === "zh" ? "升级" : "Upgrade"}
           </Link>
+        </div>
+      )}
+
+      {/* ── 新手引导回看 ── */}
+      {isLoggedIn && (
+        <div className="flex justify-center -mb-4">
+          <ReplayOnboarding label={t("profile.replayGuide")} />
         </div>
       )}
 

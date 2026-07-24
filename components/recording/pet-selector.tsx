@@ -80,7 +80,7 @@ export function PetSelector({ userId, selectedPetId, onSelectPet }: PetSelectorP
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-xs text-muted-foreground text-center">{t("pet.hint")}</p>
+      <p className="text-sm text-muted-foreground text-center">{t("pet.hint")}</p>
       {/* Pet avatar row */}
       <div className="flex items-center justify-center gap-2">
         {pets.map((pet) => (
