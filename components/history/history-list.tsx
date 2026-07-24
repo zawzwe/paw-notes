@@ -1,10 +1,9 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { Trash2, ChevronDown, ChevronUp } from "lucide-react";
-import type { User } from "@supabase/supabase-js";
+import { Trash2 } from "lucide-react";
 
 interface AnalysisRow {
   emotion_label: string | null;
@@ -22,34 +21,50 @@ interface HistoryItem {
   analysis: AnalysisRow[] | AnalysisRow | null;
 }
 
-const emotionMeta: Record<string, { emoji: string; zhLabel: string }> = {
-  happy:    { emoji: "😊", zhLabel: "开心" },
-  sad:      { emoji: "😢", zhLabel: "难过" },
-  angry:    { emoji: "😤", zhLabel: "生气" },
-  fear:     { emoji: "😨", zhLabel: "害怕" },
-  excited:  { emoji: "🤩", zhLabel: "兴奋" },
-  hungry:   { emoji: "🍽️", zhLabel: "饿了" },
-  pain:     { emoji: "🤕", zhLabel: "疼痛" },
-  playful:  { emoji: "🎾", zhLabel: "想玩" },
-  anxious:  { emoji: "😰", zhLabel: "焦虑" },
-};
-
-function formatDate(dateStr: string, locale: string) {
+function formatTime(dateStr: string, locale: string) {
   const date = new Date(dateStr);
-  return date.toLocaleDateString(locale === "zh" ? "zh-CN" : "en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const fmt = locale === "zh" ? "zh-CN" : "en-US";
+  return date.toLocaleTimeString(fmt, { hour: "2-digit", minute: "2-digit" });
 }
+
+function formatDateLabel(dateStr: string, locale: string) {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  if (days === 0) return locale === "zh" ? "今天" : "Today";
+  if (days === 1) return locale === "zh" ? "昨天" : "Yesterday";
+  const fmt = locale === "zh" ? "zh-CN" : "en-US";
+  return date.toLocaleDateString(fmt, { month: "long", day: "numeric" });
+}
+
+function petName(species: "cat" | "dog", locale: string) {
+  if (locale === "zh") return species === "cat" ? "小咪" : "旺财";
+  return species === "cat" ? "Kitty" : "Buddy";
+}
+
+function petAvatar(species: "cat" | "dog") {
+  return species === "cat" ? "🐱" : "🐶";
+}
+
+const emotionMeta: Record<string, { emoji: string; zhLabel: string; enLabel: string }> = {
+  happy:    { emoji: "😊", zhLabel: "开心", enLabel: "Happy" },
+  sad:      { emoji: "😢", zhLabel: "难过", enLabel: "Sad" },
+  angry:    { emoji: "😤", zhLabel: "生气", enLabel: "Angry" },
+  fear:     { emoji: "😨", zhLabel: "害怕", enLabel: "Scared" },
+  excited:  { emoji: "🤩", zhLabel: "兴奋", enLabel: "Excited" },
+  hungry:   { emoji: "🍽️", zhLabel: "饿了", enLabel: "Hungry" },
+  pain:     { emoji: "🤕", zhLabel: "疼痛", enLabel: "In pain" },
+  playful:  { emoji: "🎾", zhLabel: "想玩", enLabel: "Playful" },
+  anxious:  { emoji: "😰", zhLabel: "焦虑", enLabel: "Anxious" },
+};
 
 export function HistoryList() {
   const t = useTranslations();
+  const locale = useLocale();
   const [items, setItems] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const PAGE_SIZE = 20;
@@ -58,7 +73,6 @@ export function HistoryList() {
     const supabase = createClient();
     const { data: authData } = await supabase.auth.getUser();
     if (!authData.user) return;
-
     const { data, error: fetchError } = await supabase
       .from("recordings")
       .select(`
@@ -67,17 +81,13 @@ export function HistoryList() {
       `)
       .order("created_at", { ascending: false })
       .range(pageNum * PAGE_SIZE, (pageNum + 1) * PAGE_SIZE - 1);
-
     return { data, error: fetchError };
   }, []);
 
   const loadMore = useCallback(async () => {
     const nextPage = page + 1;
     const result = await fetchHistory(nextPage);
-    if (result?.error) {
-      setError(result.error.message);
-      return;
-    }
+    if (result?.error) { setError(result.error.message); return; }
     if (result?.data) {
       setItems((prev) => [...prev, ...(result.data as unknown as HistoryItem[])]);
       setHasMore(result.data.length === PAGE_SIZE);
@@ -90,10 +100,7 @@ export function HistoryList() {
       setLoading(true);
       const result = await fetchHistory(0);
       setLoading(false);
-      if (result?.error) {
-        setError(result.error.message);
-        return;
-      }
+      if (result?.error) { setError(result.error.message); return; }
       if (result?.data) {
         setItems(result.data as unknown as HistoryItem[]);
         setHasMore(result.data.length === PAGE_SIZE);
@@ -102,144 +109,130 @@ export function HistoryList() {
     })();
   }, [fetchHistory]);
 
-  const handleDelete = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleDelete = async (id: string) => {
     const supabase = createClient();
     await supabase.from("recordings").delete().eq("id", id);
     setItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  // Loading
   if (loading) {
     return (
-      <div className="flex flex-col items-center gap-3 py-12">
+      <div className="flex flex-col items-center gap-3 py-16">
         <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-        <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
+        <p className="text-xs text-muted-foreground">{t("common.loading")}</p>
       </div>
     );
   }
 
-  // Error
   if (error) {
     return (
-      <div className="text-center py-12">
+      <div className="text-center py-16">
         <p className="text-sm text-red-500">{error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-2 text-xs underline text-muted-foreground"
-        >
-          {t("common.retry")}
-        </button>
       </div>
     );
   }
 
-  // Empty
   if (items.length === 0) {
     return (
       <div className="text-center py-16">
-        <p className="text-4xl mb-4">📭</p>
-        <p className="text-muted-foreground">
-          {t("history.empty")}
-        </p>
+        <span className="text-5xl">💬</span>
+        <p className="text-sm text-muted-foreground mt-3">{t("history.empty")}</p>
       </div>
     );
   }
 
+  // Group by date
+  const grouped: Record<string, HistoryItem[]> = {};
+  items.forEach((item) => {
+    const label = formatDateLabel(item.created_at, locale);
+    if (!grouped[label]) grouped[label] = [];
+    grouped[label].push(item);
+  });
+
   return (
-    <div className="flex flex-col gap-3">
-      {items.map((item) => {
-        const analysisData = Array.isArray(item.analysis)
-          ? item.analysis[0]
-          : item.analysis ?? null;
-        const analysis = analysisData ?? null;
-        const el = analysis?.emotion_label;
-        const meta = el && emotionMeta[el]
-          ? emotionMeta[el]
-          : el
-          ? { emoji: "💬", zhLabel: el }
-          : null;
-        const isExpanded = expandedId === item.id;
+    <div className="flex flex-col gap-6 pb-8">
+      {Object.entries(grouped).map(([dateLabel, dayItems]) => (
+        <div key={dateLabel} className="flex flex-col gap-3">
+          {/* Date divider */}
+          <div className="flex justify-center">
+            <span className="text-[11px] text-muted-foreground/60 bg-muted/40 rounded-full px-3 py-0.5">
+              {dateLabel}
+            </span>
+          </div>
 
-        return (
-          <div
-            key={item.id}
-            onClick={() => setExpandedId(isExpanded ? null : item.id)}
-            className="rounded-xl border border-muted-foreground/20 bg-card p-4 cursor-pointer hover:border-muted-foreground/40 transition-colors"
-          >
-            {/* Row: animal + emotion + date + delete */}
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">
-                {item.species === "cat" ? "🐱" : "🐶"}
-              </span>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  {meta ? (
-                    <span className="text-sm font-medium">
-                      {meta.emoji} {meta.zhLabel}
-                    </span>
-                  ) : (
-                    <span className="text-sm text-muted-foreground">
-                      {item.status === "completed"
-                        ? t("history.analyzed")
-                        : t("history.processing")}
-                    </span>
-                  )}
+          {dayItems.map((item) => {
+            const analysisData = Array.isArray(item.analysis)
+              ? item.analysis[0]
+              : item.analysis ?? null;
+            const analysis = analysisData ?? null;
+            const meta = analysis?.emotion_label
+              ? (emotionMeta[analysis.emotion_label] ?? { emoji: "💬", zhLabel: analysis.emotion_label })
+              : null;
+
+            return (
+              <div key={item.id} className="flex items-start gap-2.5 group">
+                {/* Avatar */}
+                <div className="shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/20 flex items-center justify-center text-lg mt-1">
+                  {petAvatar(item.species)}
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  {formatDate(item.created_at, "zh")}
-                </p>
-              </div>
-              <button
-                onClick={(e) => handleDelete(item.id, e)}
-                className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/30 text-muted-foreground hover:text-red-500 transition-colors"
-                aria-label="Delete"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-              {isExpanded ? (
-                <ChevronUp className="w-4 h-4 text-muted-foreground shrink-0" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
-              )}
-            </div>
 
-            {/* Expanded: detail text */}
-            {isExpanded && (
-              <div className="mt-3 pt-3 border-t border-muted-foreground/10">
-                {analysis ? (
-                  <>
-                    <p className="text-sm italic leading-relaxed">
-                      &ldquo;{analysis.translated_text_zh || analysis.translated_text}&rdquo;
-                    </p>
-                    {analysis.emotion_confidence != null && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {t("result.confidence")}:{" "}
-                        {Math.round(analysis.emotion_confidence * 100)}%
+                <div className="flex-1 flex flex-col min-w-0">
+                  {/* Name + time */}
+                  <div className="flex items-baseline gap-2 mb-1">
+                    <span className="text-xs font-medium text-amber-700 dark:text-amber-400">
+                      {petName(item.species, locale)}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground/50">
+                      {formatTime(item.created_at, locale)}
+                    </span>
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-red-50 dark:hover:bg-red-950/30 text-muted-foreground/30 hover:text-red-400"
+                      aria-label="Delete"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
+
+                  {/* Bubble */}
+                  <div className="relative bg-muted/70 rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[90%]">
+                    {/* Bubble tail */}
+                    <div className="absolute -left-1.5 top-0 w-3 h-3 bg-muted/70" style={{
+                      clipPath: "polygon(100% 0, 0 0, 100% 100%)",
+                    }} />
+
+                    {analysis ? (
+                      <p className="text-sm leading-relaxed">
+                        {analysis.translated_text_zh || analysis.translated_text || "..."}
+                      </p>
+                    ) : (
+                      <p className="text-sm text-muted-foreground italic">
+                        {item.status === "failed" ? t("common.error") : t("history.noData")}
                       </p>
                     )}
-                  </>
-                ) : (
-                  <p className="text-xs text-muted-foreground">
-                    {item.status === "failed"
-                      ? t("common.error")
-                      : item.status === "processing"
-                      ? t("history.processing")
-                      : t("history.noData")}
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-        );
-      })}
+                  </div>
 
-      {/* Load more */}
+                  {/* Meta row */}
+                  {meta && (
+                    <div className="flex items-center gap-1 mt-1 ml-1">
+                      <span className="text-[10px] text-muted-foreground/50">
+                        {meta.emoji}{" "}
+                        {locale === "zh" ? meta.zhLabel : meta.enLabel}
+                        {analysis?.emotion_confidence != null
+                          ? ` · ${Math.round(analysis.emotion_confidence * 100)}%`
+                          : ""}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ))}
+
       {hasMore && (
-        <button
-          onClick={loadMore}
-          className="text-sm text-muted-foreground hover:text-foreground py-2 transition-colors"
-        >
+        <button onClick={loadMore} className="text-xs text-muted-foreground hover:text-foreground py-2 transition-colors">
           {t("history.loadMore")}
         </button>
       )}

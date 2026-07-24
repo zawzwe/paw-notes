@@ -48,6 +48,7 @@
     "noResult": "尚未分析"
   },
   "history": {
+    "title": "和毛孩子的对话",
     "empty": "还没有分析记录，去首页录一段吧～",
     "analyzed": "已分析",
     "processing": "分析中...",
