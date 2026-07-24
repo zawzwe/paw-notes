@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 export type Animal = "cat" | "dog";
 
@@ -12,13 +13,13 @@ interface AnimalSelectorProps {
 const animals = [
   {
     id: "cat" as Animal,
-    emoji: "🐱",
+    src: "/pets/cat-icon-v3.png",
     gradient: "from-orange-50 to-amber-100 dark:from-orange-950/20 dark:to-amber-950/10",
     shadow: "shadow-lg shadow-orange-100/40 dark:shadow-orange-900/10",
   },
   {
     id: "dog" as Animal,
-    emoji: "🐶",
+    src: "/pets/dog-icon-v3.png",
     gradient: "from-sky-50 to-blue-100 dark:from-sky-950/20 dark:to-blue-950/10",
     shadow: "shadow-lg shadow-sky-100/40 dark:shadow-sky-900/10",
   },
@@ -33,7 +34,7 @@ export function AnimalSelector({ selected, onSelect }: AnimalSelectorProps) {
         {t("animal.select")}
       </h2>
       <div className="flex items-center gap-10">
-        {animals.map(({ id, emoji, gradient, shadow }) => {
+        {animals.map(({ id, src, gradient, shadow }) => {
           const isSelected = selected === id;
           return (
             <button
@@ -47,18 +48,20 @@ export function AnimalSelector({ selected, onSelect }: AnimalSelectorProps) {
               <div
                 className={`
                   w-28 h-28 rounded-full bg-gradient-to-b ${gradient} ${shadow}
-                  flex items-center justify-center
+                  flex items-center justify-center overflow-hidden
                   transition-all duration-300
                   ${isSelected ? "ring-2 ring-amber-400/60" : ""}
                 `}
               >
-                <span
-                  className={`text-5xl transition-transform duration-300 ${
+                <Image
+                  src={src}
+                  alt={id === "cat" ? "Cat" : "Dog"}
+                  width={112}
+                  height={112}
+                  className={`object-contain p-3 transition-transform duration-300 ${
                     isSelected ? "scale-110" : ""
                   }`}
-                >
-                  {emoji}
-                </span>
+                />
               </div>
               <span
                 className={`text-sm font-medium transition-colors ${

@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
+import Image from "next/image";
 
 export function LandingHero() {
   const t = useTranslations();
@@ -45,8 +46,8 @@ export function LandingHero() {
           `}
           aria-label={t("landing.cta")}
         >
-          <div className="w-36 h-36 rounded-full bg-gradient-to-b from-amber-100 to-amber-200 dark:from-amber-900/40 dark:to-amber-800/20 flex items-center justify-center shadow-lg shadow-amber-200/50 dark:shadow-amber-900/20">
-            <span className="text-6xl select-none">🐱</span>
+          <div className="w-36 h-36 rounded-full bg-gradient-to-b from-amber-100 to-amber-200 dark:from-amber-900/40 dark:to-amber-800/20 flex items-center justify-center shadow-lg shadow-amber-200/50 dark:shadow-amber-900/20 overflow-hidden">
+            <Image src="/pets/cat-icon-v3.png" alt="Cat" width={144} height={144} className="object-contain p-4" />
           </div>
         </button>
 
