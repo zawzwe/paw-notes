@@ -203,7 +203,9 @@ export function HistoryList() {
 
                     {analysis ? (
                       <p className="text-sm leading-relaxed">
-                        {analysis.translated_text_zh || analysis.translated_text || "..."}
+                        {locale === "zh"
+                          ? (analysis.translated_text_zh || analysis.translated_text || "...")
+                          : (analysis.translated_text || analysis.translated_text_zh || "...")}
                       </p>
                     ) : (
                       <p className="text-sm text-muted-foreground italic">

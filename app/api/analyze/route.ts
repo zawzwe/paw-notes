@@ -84,45 +84,53 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 3. Upload audio file to Supabase Storage
+    // 3. Prepare audio for Qwen
     const fileBuffer = Buffer.from(await file.arrayBuffer());
-    // Detect MIME from extension (FormData may not set proper MIME)
     const ext = file.name.split(".").pop()?.toLowerCase() || "webm";
     const mimeMap: Record<string, string> = {
       wav: "audio/wav", mp3: "audio/mpeg", m4a: "audio/x-m4a",
       ogg: "audio/ogg", webm: "audio/webm",
     };
     const mimeType = mimeMap[ext] || "audio/webm";
-    const fileName = `${Date.now()}-${crypto.randomUUID()}.${ext}`;
-    const filePath = `${userId || "anonymous"}/${fileName}`;
 
-    // Use auth client for storage (works with RLS + user JWT)
-    const { error: uploadError } = await authClient.storage
-      .from("audio-uploads")
-      .upload(filePath, fileBuffer, {
-        contentType: mimeType,
-        upsert: false,
-      });
+    let audioUrl: string;
+    let filePath: string | null = null;
 
-    if (uploadError) {
-      console.error("Storage upload error:", JSON.stringify(uploadError));
-      return NextResponse.json(
-        { error: `Upload failed: ${uploadError.message}` },
-        { status: 500 }
-      );
-    }
+    if (userId) {
+      // Authenticated: upload to Storage
+      const fileName = `${Date.now()}-${crypto.randomUUID()}.${ext}`;
+      filePath = `${userId}/${fileName}`;
 
-    // 4. Get signed URL (valid 5 min) for Qwen API
-    const { data: signedUrlData } = await authClient.storage
-      .from("audio-uploads")
-      .createSignedUrl(filePath, 300);
+      const { error: uploadError } = await authClient.storage
+        .from("audio-uploads")
+        .upload(filePath, fileBuffer, {
+          contentType: mimeType,
+          upsert: false,
+        });
 
-    const audioUrl = signedUrlData?.signedUrl;
-    if (!audioUrl) {
-      return NextResponse.json(
-        { error: "Failed to generate signed URL" },
-        { status: 500 }
-      );
+      if (uploadError) {
+        console.error("Storage upload error:", JSON.stringify(uploadError));
+        return NextResponse.json(
+          { error: `Upload failed: ${uploadError.message}` },
+          { status: 500 }
+        );
+      }
+
+      const { data: signedUrlData } = await authClient.storage
+        .from("audio-uploads")
+        .createSignedUrl(filePath, 300);
+
+      if (!signedUrlData?.signedUrl) {
+        return NextResponse.json(
+          { error: "Failed to generate signed URL" },
+          { status: 500 }
+        );
+      }
+      audioUrl = signedUrlData.signedUrl;
+    } else {
+      // Unauthenticated: base64 inline (Qwen format: data:;base64,xxx)
+      const base64 = fileBuffer.toString("base64");
+      audioUrl = `data:;base64,${base64}`;
     }
 
     // 5. Create recording record (if authenticated)

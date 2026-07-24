@@ -27,8 +27,8 @@ export async function analyzePetAudio(
 {
   "emotion_label": "happy|sad|angry|fear|excited|hungry|pain|playful|anxious",
   "emotion_confidence": 0.0到1.0之间的数字,
-  "translated_text": "用${langText}写一段温暖的、以宠物第一人称口吻的话，像是宠物在对主人说话",
-  "translated_text_zh": "用中文写一段温暖的、以宠物第一人称口吻的话"
+  "translated_text": ${locale === "zh" ? `"用中文写一段温暖的话，以宠物第一人称口吻，像是宠物在对主人撒娇"` : `"Write a warm, natural-sounding message in English from the pet's perspective, as if the pet is talking to their owner. Make it sound like a real pet would — cute and affectionate"`},
+  "translated_text_zh": "用中文写一段温暖的话，以宠物第一人称口吻"
 }`;
 
   const response = await fetch(`${BAILIAN_BASE}/chat/completions`, {
