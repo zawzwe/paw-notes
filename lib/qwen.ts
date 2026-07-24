@@ -122,14 +122,12 @@ export async function analyzePetAudio(
   species: "cat" | "dog",
   locale: "zh" | "en"
 ): Promise<QwenAnalysisResult> {
-  // Step 1: Audio → Description
   const description = await getAudioDescription(audioUrl);
 
   if (!description || description.trim().length < 10) {
     throw new Error("Audio description too short or empty — try a clearer recording");
   }
 
-  // Step 2: Description → Emotion
   return await analyzeDescription(description, species, locale);
 }
 
