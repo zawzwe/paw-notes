@@ -6,6 +6,7 @@ import { routing } from "@/i18n/routing";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -61,6 +62,7 @@ export default async function LocaleLayout({
             {children}
           </ThemeProvider>
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );
