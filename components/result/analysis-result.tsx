@@ -1,8 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Volume2, Loader2 } from "lucide-react";
+import { Volume2 } from "lucide-react";
 import { useRef, useState } from "react";
+import { LottieAnimation } from "@/components/lottie-cat";
 
 export interface AnalysisData {
   emotion: string;
@@ -57,8 +58,11 @@ export function AnalysisResult({
   // Loading state
   if (loading) {
     return (
-      <section className="flex flex-col items-center gap-4 py-8">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <section className="flex flex-col items-center gap-2 py-6">
+        <LottieAnimation
+          src="/Pet%20Loading.json"
+          className="size-36"
+        />
         <p className="text-sm text-muted-foreground">
           {t("result.analyzing")}
         </p>
