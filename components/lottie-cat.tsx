@@ -2,11 +2,12 @@
 
 import { useEffect, useRef } from "react";
 
-interface LottieCatProps {
+interface LottieAnimationProps {
+  src: string;
   className?: string;
 }
 
-export function LottieCat({ className }: LottieCatProps) {
+export function LottieAnimation({ src, className }: LottieAnimationProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -19,7 +20,7 @@ export function LottieCat({ className }: LottieCatProps) {
       if (cancelled) return;
 
       const player = document.createElement("lottie-player");
-      player.setAttribute("src", "/Slipper.json");
+      player.setAttribute("src", src);
       player.setAttribute("loop", "");
       player.setAttribute("autoplay", "");
       player.style.width = "100%";
@@ -32,7 +33,15 @@ export function LottieCat({ className }: LottieCatProps) {
       cancelled = true;
       container.replaceChildren();
     };
-  }, []);
+  }, [src]);
 
-  return <div ref={ref} className={className} />;
+  return <div ref={ref} className={className} aria-hidden="true" />;
+}
+
+interface LottieCatProps {
+  className?: string;
+}
+
+export function LottieCat({ className }: LottieCatProps) {
+  return <LottieAnimation src="/Slipper.json" className={className} />;
 }

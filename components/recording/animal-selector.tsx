@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import Image from "next/image";
+import { LottieAnimation } from "@/components/lottie-cat";
 
 export type Animal = "cat" | "dog";
 
@@ -13,13 +13,13 @@ interface AnimalSelectorProps {
 const animals = [
   {
     id: "cat" as Animal,
-    src: "/pets/cat-icon-v3.png",
+    src: "/cat.json",
     gradient: "from-orange-50 to-amber-100 dark:from-orange-950/20 dark:to-amber-950/10",
     shadow: "shadow-lg shadow-orange-100/40 dark:shadow-orange-900/10",
   },
   {
     id: "dog" as Animal,
-    src: "/pets/dog-icon-v3.png",
+    src: "/dog.json",
     gradient: "from-sky-50 to-blue-100 dark:from-sky-950/20 dark:to-blue-950/10",
     shadow: "shadow-lg shadow-sky-100/40 dark:shadow-sky-900/10",
   },
@@ -50,16 +50,13 @@ export function AnimalSelector({ selected, onSelect }: AnimalSelectorProps) {
                   w-28 h-28 rounded-full bg-gradient-to-b ${gradient} ${shadow}
                   flex items-center justify-center overflow-hidden
                   transition-all duration-300
-                  ${isSelected ? "ring-2 ring-amber-400/60" : ""}
+                  ${isSelected ? "brightness-105" : ""}
                 `}
               >
-                <Image
+                <LottieAnimation
                   src={src}
-                  alt={id === "cat" ? "Cat" : "Dog"}
-                  width={112}
-                  height={112}
-                  className={`object-contain p-3 transition-transform duration-300 ${
-                    isSelected ? "scale-110" : ""
+                  className={`size-full object-contain transition-transform duration-300 ${
+                    isSelected ? "scale-[2.6]" : "scale-[2.5]"
                   }`}
                 />
               </div>
