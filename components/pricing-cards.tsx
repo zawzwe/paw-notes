@@ -1,22 +1,38 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { Check, Zap } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
+import { useState } from "react";
+import { Check, Zap, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
 export function PricingCards() {
   const t = useTranslations();
+  const locale = useLocale();
   const { isLoggedIn } = useAuth();
+  const [loading, setLoading] = useState(false);
 
-  const handleUpgrade = () => {
+  const handleUpgrade = async () => {
     if (!isLoggedIn) {
       window.location.href = "/auth/sign-up";
       return;
     }
-    // TODO: 接入支付 (Zpay for CNY / Creem for USD)
-    alert(
-      t("pricing.comingSoon")
-    );
+    setLoading(true);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ locale }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || "Failed to create checkout");
+      }
+    } catch {
+      alert("Network error, please try again");
+    }
+    setLoading(false);
   };
 
   return (
@@ -68,7 +84,8 @@ export function PricingCards() {
         </ul>
         <button
           onClick={handleUpgrade}
-          className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-medium text-sm transition-colors"
+          disabled={loading}
+          className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-70 text-white font-medium text-sm transition-colors flex items-center justify-center gap-2"
         >
           {isLoggedIn
             ? t("pricing.monthly.cta")

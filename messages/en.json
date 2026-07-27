@@ -90,6 +90,11 @@
     "signUp": "Sign up",
     "forgotPassword": "Forgot password"
   },
+  "payment": {
+    "successTitle": "Payment successful! 🎉",
+    "successDesc": "You're now on the Monthly plan — unlimited analyses await!",
+    "goAnalyze": "Start analyzing"
+  },
   "pricing": {
     "title": "Choose your plan",
     "subtitle": "Start free, upgrade anytime",

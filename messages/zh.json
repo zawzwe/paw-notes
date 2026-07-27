@@ -90,6 +90,11 @@
     "signUp": "注册",
     "forgotPassword": "忘记密码"
   },
+  "payment": {
+    "successTitle": "支付成功！🎉",
+    "successDesc": "你已升级为月度会员，现在可以无限次分析了",
+    "goAnalyze": "去分析"
+  },
   "pricing": {
     "title": "选择适合你的方案",
     "subtitle": "免费开始，随时升级",
