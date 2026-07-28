@@ -13,7 +13,18 @@
     "deleteConfirm": "确定要删除{name}吗？",
     "deleteHint": "双击宠物可删除",
     "namePlaceholder": "起个名字",
-    "hint": "选择你想了解的毛孩子"
+    "hint": "选择你想了解的毛孩子",
+    "edit": "编辑档案"
+  },
+  "petProfile": {
+    "title": "宠物档案",
+    "name": "名字",
+    "breed": "品种",
+    "breedHint": "例如：英短、金毛",
+    "birth": "生日",
+    "gotcha": "来家里的日子",
+    "tags": "个性标签",
+    "tagsHint": "用逗号分隔，最多5个"
   },
   "animal": {
     "select": "选择你的宠物",

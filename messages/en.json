@@ -13,7 +13,18 @@
     "deleteConfirm": "Delete {name}?",
     "deleteHint": "Double click a pet to delete",
     "namePlaceholder": "Name",
-    "hint": "Choose your fur baby"
+    "hint": "Choose your fur baby",
+    "edit": "Edit profile"
+  },
+  "petProfile": {
+    "title": "Pet Profile",
+    "name": "Name",
+    "breed": "Breed",
+    "breedHint": "e.g. British Shorthair, Golden Retriever",
+    "birth": "Birthday",
+    "gotcha": "Gotcha day",
+    "tags": "Personality tags",
+    "tagsHint": "Separate with commas, up to 5"
   },
   "animal": {
     "select": "Choose your pet",
