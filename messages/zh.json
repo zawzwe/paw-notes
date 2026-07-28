@@ -47,7 +47,11 @@
     "uploadFile": "或从文件上传",
     "preview": "录音预览",
     "reRecord": "重新录制",
-    "analyze": "开始分析"
+    "analyze": "开始分析",
+    "permTitle": "需要麦克风权限",
+    "permDesc": "PawNotes 需要使用麦克风来录制宠物叫声。录音仅用于分析，默认不公开。",
+    "permAllow": "允许",
+    "permDeny": "不用了"
   },
   "upload": {
     "dropOrClick": "点击上传或拖拽文件到此处",

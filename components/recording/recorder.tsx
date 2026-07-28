@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Mic, Square, RotateCcw, Play, Pause } from "lucide-react";
+import { Mic, Square, RotateCcw, Play, Pause, MicOff } from "lucide-react";
 import { useRef, useState } from "react";
 import { type RecordingState } from "@/hooks/use-recording";
 
@@ -33,6 +33,20 @@ export function Recorder({
   const t = useTranslations();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showPermGate, setShowPermGate] = useState(false);
+
+  const handleMicClick = () => {
+    setShowPermGate(true);
+  };
+
+  const handlePermAllow = () => {
+    setShowPermGate(false);
+    onStart();
+  };
+
+  const handlePermDeny = () => {
+    setShowPermGate(false);
+  };
 
   const handlePlayPause = () => {
     const audio = audioRef.current;
@@ -47,11 +61,11 @@ export function Recorder({
 
   return (
     <section className="flex flex-col items-center gap-4">
-      {/* Idle: 大圆录音按钮 */}
-      {state === "idle" && (
+      {/* Idle: Permission gate or big mic button */}
+      {state === "idle" && !showPermGate && (
         <>
           <button
-            onClick={onStart}
+            onClick={handleMicClick}
             disabled={disabled}
             className="w-28 h-28 rounded-full bg-red-500 enabled:hover:bg-red-600 disabled:bg-muted disabled:cursor-not-allowed flex items-center justify-center shadow-lg enabled:hover:shadow-xl transition-all enabled:active:scale-95"
             aria-label={t("recording.tapToRecord")}
@@ -62,6 +76,31 @@ export function Recorder({
             {disabled ? t("animal.select") : t("recording.tapToRecord")}
           </p>
         </>
+      )}
+
+      {/* Permission explanation gate */}
+      {state === "idle" && showPermGate && (
+        <div className="flex flex-col items-center gap-4 p-5 rounded-2xl border border-muted-foreground/20 bg-card max-w-xs text-center">
+          <MicOff className="w-8 h-8 text-muted-foreground" />
+          <p className="text-sm font-medium">{t("recording.permTitle")}</p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {t("recording.permDesc")}
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={handlePermAllow}
+              className="px-5 py-2 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-medium transition-colors"
+            >
+              {t("recording.permAllow")}
+            </button>
+            <button
+              onClick={handlePermDeny}
+              className="px-5 py-2 rounded-xl border border-muted-foreground/30 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {t("recording.permDeny")}
+            </button>
+          </div>
+        </div>
       )}
 
       {/* Recording: 录音中 */}

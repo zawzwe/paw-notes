@@ -47,7 +47,11 @@
     "uploadFile": "Or upload a file",
     "preview": "Preview",
     "reRecord": "Record again",
-    "analyze": "Analyze"
+    "analyze": "Analyze",
+    "permTitle": "Microphone needed",
+    "permDesc": "PawNotes uses your mic to record pet sounds. Audio is kept private and only used for analysis.",
+    "permAllow": "Allow",
+    "permDeny": "Not now"
   },
   "upload": {
     "dropOrClick": "Tap to browse or drag a file here",
