@@ -87,7 +87,7 @@ async function analyzeDescription(
         { role: "system", content: systemPrompt },
         {
           role: "user",
-          content: `音频描述：${description}\n${context ? `\n主人提供的情境：${context}\n` : "\n"}\n请根据以上描述${context ? "并结合主人提供的情境" : ""}分析这只${speciesText}的情绪，返回JSON：\n{\n  "emotion_label": "情绪标签英文",\n  "emotion_confidence": 0.0到1.0,\n  "translated_text": ${locale === "zh" ? `"用中文以宠物第一人称写一句话，贴合情绪"` : `"Write one sentence in English from the pet's first-person perspective, matching the emotion"`},\n  "translated_text_zh": "用中文以宠物第一人称写一句话，贴合情绪",\n  "why_clue": "用英文写1-2句解释：从声音的什么特征得出这个判断（音高、频率、节奏等）",\n  "why_clue_zh": "用中文写1-2句解释：从声音的什么特征得出这个判断",\n  "observation": "用英文写1句温和的观察建议，主人接下来可以注意什么",\n  "observation_zh": "用中文写1句温和的观察建议"\n}`,
+          content: `音频描述：${description}\n${context ? `\n主人提供的情境：${context}\n` : "\n（主人未提供情境，请仅基于声音特征谨慎判断，并在observation_zh中加上提示：仅凭声音线索有限，补充当时发生的事可让解读更准确。）\n"}\n请根据以上描述${context ? "并结合主人提供的情境" : ""}分析这只${speciesText}的情绪，返回JSON：\n{\n  "emotion_label": "情绪标签英文",\n  "emotion_confidence": 0.0到1.0,\n  "translated_text": ${locale === "zh" ? `"用中文以宠物第一人称写一句话，贴合情绪"` : `"Write one sentence in English from the pet's first-person perspective, matching the emotion"`},\n  "translated_text_zh": "用中文以宠物第一人称写一句话，贴合情绪",\n  "why_clue": "用英文写1-2句解释：从声音的什么特征得出这个判断（音高、频率、节奏等）",\n  "why_clue_zh": "用中文写1-2句解释：从声音的什么特征得出这个判断",\n  "observation": "用英文写1句温和的观察建议，主人接下来可以注意什么",\n  "observation_zh": "用中文写1句温和的观察建议"\n}`,
         },
       ],
       max_tokens: 600,
