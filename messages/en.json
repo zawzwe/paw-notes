@@ -22,6 +22,15 @@
     "catDesc": "Meow",
     "dogDesc": "Woof"
   },
+  "sample": {
+    "title": "No audio? Try a sample",
+    "badge": "Sample",
+    "listen": "Listen",
+    "playing": "Playing",
+    "replay": "Replay",
+    "back": "Back to samples",
+    "hint": "Pre-generated result · Doesn't count toward your limit"
+  },
   "lure": {
     "title": "Sounds to get their attention",
     "meow": "Meow",

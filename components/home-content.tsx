@@ -10,6 +10,7 @@ import { Recorder } from "@/components/recording/recorder";
 import { AudioUploader } from "@/components/recording/audio-uploader";
 import { LureBar } from "@/components/recording/lure-bar";
 import { PetSelector } from "@/components/recording/pet-selector";
+import { SampleSound } from "@/components/recording/sample-sound";
 import { AnalysisResult, type AnalysisData } from "@/components/result/analysis-result";
 import { useRecording } from "@/hooks/use-recording";
 import { ReplayOnboarding } from "@/components/replay-onboarding";
@@ -172,6 +173,9 @@ export function HomeContent() {
           <ReplayOnboarding label={t("profile.replayGuide")} />
         </div>
       )}
+
+      {/* ── Sample Sound ── */}
+      <SampleSound />
 
       {/* ── 宠物选择 ── */}
       {isLoggedIn && (

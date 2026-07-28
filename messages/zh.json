@@ -22,6 +22,15 @@
     "catDesc": "喵星人",
     "dogDesc": "汪星人"
   },
+  "sample": {
+    "title": "没有音频？试试示例",
+    "badge": "示例",
+    "listen": "试听",
+    "playing": "播放中",
+    "replay": "重新播放",
+    "back": "返回示例列表",
+    "hint": "预生成结果 · 不计入分析次数"
+  },
   "lure": {
     "title": "吸引小主子的声音",
     "meow": "猫叫",
