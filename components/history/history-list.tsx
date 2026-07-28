@@ -24,6 +24,7 @@ interface HistoryItem {
   source: "realtime" | "upload";
   status: string;
   title: string | null;
+  note: string | null;
   created_at: string;
   analysis: AnalysisRow[] | AnalysisRow | null;
   pets: { name: string; avatar: string | null } | null;
@@ -85,7 +86,7 @@ export function HistoryList() {
     const { data, error: fetchError } = await supabase
       .from("recordings")
       .select(`
-        id, species, source, status, title, created_at,
+        id, species, source, status, title, note, created_at,
         analysis:analyses(emotion_label, emotion_confidence, translated_text, translated_text_zh, raw_response),
         pets(name, avatar)
       `)
@@ -266,6 +267,37 @@ export function HistoryList() {
                       <p className="text-xs text-muted-foreground leading-relaxed">
                         {locale === "zh" ? (analysis.raw_response.observation_zh || analysis.raw_response.observation) : (analysis.raw_response.observation || analysis.raw_response.observation_zh)}
                       </p>
+                    </div>
+                  )}
+                  {/* Owner note */}
+                  {expandedId === item.id && (
+                    <div className="mt-2 pt-2 border-t border-muted-foreground/5">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-[10px] text-muted-foreground/60">
+                          {locale === "zh" ? "主人备注" : "Owner's note"}
+                        </p>
+                        <button
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            const ta = (e.target as HTMLElement).parentElement?.parentElement?.querySelector("textarea");
+                            if (!ta) return;
+                            const v = ta.value.trim();
+                            const supabase = createClient();
+                            await supabase.from("recordings").update({ note: v || null }).eq("id", item.id);
+                            setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, note: v || null } : i)));
+                          }}
+                          className="text-[10px] text-amber-600 dark:text-amber-400 hover:underline"
+                        >
+                          {t("common.save")}
+                        </button>
+                      </div>
+                      <textarea
+                        defaultValue={item.note || ""}
+                        placeholder={locale === "zh" ? "写下你想记住的..." : "Write something to remember..."}
+                        rows={2}
+                        className="w-full rounded-lg border border-muted-foreground/20 bg-muted/30 px-2 py-1.5 text-xs resize-none focus:outline-none focus:ring-1 focus:ring-amber-400/50"
+                        onClick={(e) => e.stopPropagation()}
+                      />
                     </div>
                   )}
                 </div>
