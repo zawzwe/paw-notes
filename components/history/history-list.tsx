@@ -23,6 +23,7 @@ interface HistoryItem {
   species: "cat" | "dog";
   source: "realtime" | "upload";
   status: string;
+  title: string | null;
   created_at: string;
   analysis: AnalysisRow[] | AnalysisRow | null;
   pets: { name: string; avatar: string | null } | null;
@@ -84,7 +85,7 @@ export function HistoryList() {
     const { data, error: fetchError } = await supabase
       .from("recordings")
       .select(`
-        id, species, source, status, created_at,
+        id, species, source, status, title, created_at,
         analysis:analyses(emotion_label, emotion_confidence, translated_text, translated_text_zh, raw_response),
         pets(name, avatar)
       `)
@@ -191,6 +192,9 @@ export function HistoryList() {
                     <span className="text-xs font-medium text-amber-700 dark:text-amber-400">
                       {item.pets?.name || petName(item.species, locale)}
                     </span>
+                    {item.title && (
+                      <span className="text-xs text-muted-foreground/70 truncate max-w-[160px]">— {item.title}</span>
+                    )}
                     <span className="text-[10px] text-muted-foreground/50">
                       {formatTime(item.created_at, locale)}
                     </span>

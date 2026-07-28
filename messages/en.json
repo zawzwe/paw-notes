@@ -34,6 +34,13 @@
     "new_place": "New place",
     "not_sure": "Not sure"
   },
+  "pawnote": {
+    "save": "Save this moment",
+    "saved": "Saved to journal ✓",
+    "titlePrompt": "Give this moment a name",
+    "titlePlaceholder": "e.g. Milo's happy greeting",
+    "cancel": "Cancel"
+  },
   "sample": {
     "title": "No audio? Try a sample",
     "badge": "Sample",
@@ -86,7 +93,7 @@
     "observeTitle": "Something to notice"
   },
   "history": {
-    "title": "Chats with your fur baby",
+    "title": "My PawNotes",
     "empty": "No recordings yet — head to the home page and give it a try!",
     "analyzed": "Analyzed",
     "processing": "Processing...",
@@ -95,7 +102,7 @@
   },
   "nav": {
     "analyze": "Analyze",
-    "history": "History",
+    "history": "PawNote",
     "trends": "Trends",
     "profile": "Profile",
     "pricing": "Pricing"
