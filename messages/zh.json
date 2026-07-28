@@ -22,6 +22,18 @@
     "catDesc": "喵星人",
     "dogDesc": "汪星人"
   },
+  "context": {
+    "title": "刚刚发生了什么？",
+    "hint": "补充情境让分析更准确，可以跳过",
+    "someone_arrived": "有人来了",
+    "food_nearby": "附近有吃的",
+    "playing": "正在玩耍",
+    "left_alone": "独自在家",
+    "doorbell_noise": "门铃或外面声音",
+    "seeking_attention": "在吸引注意",
+    "new_place": "到了新地方",
+    "not_sure": "不太确定"
+  },
   "sample": {
     "title": "没有音频？试试示例",
     "badge": "示例",
@@ -66,7 +78,12 @@
     "emotion": "情绪",
     "confidence": "置信度",
     "playTTS": "播放语音",
-    "noResult": "尚未分析"
+    "noResult": "尚未分析",
+    "confHigh": "较多线索支持",
+    "confMid": "部分线索支持",
+    "confLow": "有限线索支持",
+    "whyTitle": "为什么会这样判断",
+    "observeTitle": "可以留意看看"
   },
   "history": {
     "title": "和毛孩子的对话",

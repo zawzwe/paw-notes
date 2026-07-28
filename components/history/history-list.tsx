@@ -3,13 +3,19 @@
 import { useTranslations, useLocale } from "next-intl";
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { Trash2 } from "lucide-react";
+import { Trash2, ChevronDown, ChevronUp } from "lucide-react";
 
 interface AnalysisRow {
   emotion_label: string | null;
   emotion_confidence: number | null;
   translated_text: string | null;
   translated_text_zh: string | null;
+  raw_response: {
+    why_clue?: string;
+    why_clue_zh?: string;
+    observation?: string;
+    observation_zh?: string;
+  } | null;
 }
 
 interface HistoryItem {
@@ -66,6 +72,7 @@ export function HistoryList() {
   const [items, setItems] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const PAGE_SIZE = 20;
@@ -78,7 +85,7 @@ export function HistoryList() {
       .from("recordings")
       .select(`
         id, species, source, status, created_at,
-        analysis:analyses(emotion_label, emotion_confidence, translated_text, translated_text_zh),
+        analysis:analyses(emotion_label, emotion_confidence, translated_text, translated_text_zh, raw_response),
         pets(name, avatar)
       `)
       .order("created_at", { ascending: false })
@@ -226,6 +233,35 @@ export function HistoryList() {
                           ? ` · ${Math.round(analysis.emotion_confidence * 100)}%`
                           : ""}
                       </span>
+                    </div>
+                  )}
+                  {/* Why & Observation — toggle details */}
+                  {(analysis?.raw_response?.why_clue || analysis?.raw_response?.observation) && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setExpandedId(expandedId === item.id ? null : item.id);
+                      }}
+                      className="mt-2 flex items-center gap-1 text-[10px] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+                    >
+                      {expandedId === item.id ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                      {locale === "zh" ? "查看分析详情" : "View analysis details"}
+                    </button>
+                  )}
+                  {expandedId === item.id && analysis?.raw_response?.why_clue && (
+                    <div className="mt-2 pt-2 border-t border-muted-foreground/5">
+                      <p className="text-[10px] text-muted-foreground/60 mb-0.5">{t("result.whyTitle")}</p>
+                      <p className="text-xs leading-relaxed">
+                        {locale === "zh" ? (analysis.raw_response.why_clue_zh || analysis.raw_response.why_clue) : (analysis.raw_response.why_clue || analysis.raw_response.why_clue_zh)}
+                      </p>
+                    </div>
+                  )}
+                  {expandedId === item.id && analysis?.raw_response?.observation && (
+                    <div className="mt-2 pt-2 border-t border-muted-foreground/5">
+                      <p className="text-[10px] text-muted-foreground/60 mb-0.5">{t("result.observeTitle")}</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {locale === "zh" ? (analysis.raw_response.observation_zh || analysis.raw_response.observation) : (analysis.raw_response.observation || analysis.raw_response.observation_zh)}
+                      </p>
                     </div>
                   )}
                 </div>

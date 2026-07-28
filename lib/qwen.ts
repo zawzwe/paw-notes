@@ -6,6 +6,10 @@ interface QwenAnalysisResult {
   emotion_confidence: number;
   translated_text: string;
   translated_text_zh: string;
+  why_clue: string;
+  why_clue_zh: string;
+  observation: string;
+  observation_zh: string;
 }
 
 /**
@@ -49,7 +53,8 @@ async function getAudioDescription(audioUrl: string): Promise<string> {
 async function analyzeDescription(
   description: string,
   species: "cat" | "dog",
-  locale: "zh" | "en"
+  locale: "zh" | "en",
+  context?: string | null
 ): Promise<QwenAnalysisResult> {
   const apiKey = process.env.ALIYUN_BAILIAN_API_KEY;
   if (!apiKey) throw new Error("ALIYUN_BAILIAN_API_KEY is not configured");
@@ -82,7 +87,7 @@ async function analyzeDescription(
         { role: "system", content: systemPrompt },
         {
           role: "user",
-          content: `音频描述：${description}\n\n请根据以上描述分析这只${speciesText}的情绪，返回JSON：\n{\n  "emotion_label": "情绪标签",\n  "emotion_confidence": 0.0到1.0,\n  "translated_text": ${locale === "zh" ? `"用中文以宠物第一人称写一句话，贴合情绪"` : `"Write one sentence in English from the pet's first-person perspective, matching the emotion"`},\n  "translated_text_zh": "用中文以宠物第一人称写一句话，贴合情绪"\n}`,
+          content: `音频描述：${description}\n${context ? `\n主人提供的情境：${context}\n` : "\n"}\n请根据以上描述${context ? "并结合主人提供的情境" : ""}分析这只${speciesText}的情绪，返回JSON：\n{\n  "emotion_label": "情绪标签英文",\n  "emotion_confidence": 0.0到1.0,\n  "translated_text": ${locale === "zh" ? `"用中文以宠物第一人称写一句话，贴合情绪"` : `"Write one sentence in English from the pet's first-person perspective, matching the emotion"`},\n  "translated_text_zh": "用中文以宠物第一人称写一句话，贴合情绪",\n  "why_clue": "用英文写1-2句解释：从声音的什么特征得出这个判断（音高、频率、节奏等）",\n  "why_clue_zh": "用中文写1-2句解释：从声音的什么特征得出这个判断",\n  "observation": "用英文写1句温和的观察建议，主人接下来可以注意什么",\n  "observation_zh": "用中文写1句温和的观察建议"\n}`,
         },
       ],
       max_tokens: 300,
@@ -120,7 +125,8 @@ async function analyzeDescription(
 export async function analyzePetAudio(
   audioUrl: string,
   species: "cat" | "dog",
-  locale: "zh" | "en"
+  locale: "zh" | "en",
+  context?: string | null
 ): Promise<QwenAnalysisResult> {
   const description = await getAudioDescription(audioUrl);
 
@@ -128,7 +134,7 @@ export async function analyzePetAudio(
     throw new Error("Audio description too short or empty — try a clearer recording");
   }
 
-  return await analyzeDescription(description, species, locale);
+  return await analyzeDescription(description, species, locale, context);
 }
 
 /**

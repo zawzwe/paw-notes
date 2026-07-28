@@ -27,6 +27,7 @@ export async function POST(request: NextRequest) {
     const source = formData.get("source") as string | null;
     const locale = (formData.get("locale") as string) || "zh";
     const petId = (formData.get("pet_id") as string) || null;
+    const context = (formData.get("context") as string) || null;
 
     // Validate
     if (!file) {
@@ -164,7 +165,8 @@ export async function POST(request: NextRequest) {
       analysisResult = await analyzePetAudio(
         audioUrl,
         species as "cat" | "dog",
-        locale as "zh" | "en"
+        locale as "zh" | "en",
+        context
       );
     } catch (aiError) {
       console.error("AI analysis error:", aiError);
@@ -235,6 +237,12 @@ export async function POST(request: NextRequest) {
         translated_text_zh: analysisResult.translated_text_zh,
         tts_audio_path: ttsPath,
         tts_language: locale,
+        raw_response: {
+          why_clue: analysisResult.why_clue,
+          why_clue_zh: analysisResult.why_clue_zh,
+          observation: analysisResult.observation,
+          observation_zh: analysisResult.observation_zh,
+        },
       });
 
       if (analysisError) {
@@ -278,6 +286,10 @@ export async function POST(request: NextRequest) {
       text: analysisResult.translated_text,
       text_zh: analysisResult.translated_text_zh,
       tts_url: ttsUrl,
+      why: analysisResult.why_clue,
+      why_zh: analysisResult.why_clue_zh,
+      observation: analysisResult.observation,
+      observation_zh: analysisResult.observation_zh,
       recorded: !!recordingId,
       plan: userProfile?.plan || "free",
       dailyRemaining,

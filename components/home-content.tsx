@@ -11,6 +11,7 @@ import { AudioUploader } from "@/components/recording/audio-uploader";
 import { LureBar } from "@/components/recording/lure-bar";
 import { PetSelector } from "@/components/recording/pet-selector";
 import { SampleSound } from "@/components/recording/sample-sound";
+import { ContextSelector, type ContextKey } from "@/components/recording/context-selector";
 import { AnalysisResult, type AnalysisData } from "@/components/result/analysis-result";
 import { useRecording } from "@/hooks/use-recording";
 import { ReplayOnboarding } from "@/components/replay-onboarding";
@@ -34,6 +35,7 @@ export function HomeContent() {
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
   const [selectedPetSpecies, setSelectedPetSpecies] = useState<Animal | null>(null);
   const [dailyRemaining, setDailyRemaining] = useState<number | null>(null);
+  const [contextTag, setContextTag] = useState<ContextKey | null>(null);
   const [userPlan, setUserPlan] = useState<string>("free");
 
   // Fetch usage on mount when logged in
@@ -98,6 +100,7 @@ export function HomeContent() {
       );
       formData.append("locale", locale);
       if (selectedPetId) formData.append("pet_id", selectedPetId);
+      if (contextTag) formData.append("context", contextTag);
 
       const response = await fetch("/api/analyze", {
         method: "POST",
@@ -132,6 +135,10 @@ export function HomeContent() {
           text: result.text,
           text_zh: result.text_zh,
           tts_url: result.tts_url,
+          why: result.why,
+          why_zh: result.why_zh,
+          observation: result.observation,
+          observation_zh: result.observation_zh,
         },
       });
     } catch (err) {
@@ -231,6 +238,11 @@ export function HomeContent() {
           disabled={!selectedAnimal}
         />
       </div>
+
+      {/* ── 情境标签 ── */}
+      {hasAudio && !analyzeState.loading && !analyzeState.data && (
+        <ContextSelector selected={contextTag} onSelect={setContextTag} />
+      )}
 
       {/* ── 分析按钮 ── */}
       {hasAudio && !analyzeState.loading && !analyzeState.data && (

@@ -11,6 +11,10 @@ export interface AnalysisData {
   text: string;
   text_zh: string;
   tts_url: string | null;
+  why?: string;
+  why_zh?: string;
+  observation?: string;
+  observation_zh?: string;
 }
 
 interface AnalysisResultProps {
@@ -103,10 +107,19 @@ export function AnalysisResult({
   const meta = emotionMeta[data.emotion] || { emoji: "💬", zhLabel: data.emotion, enLabel: data.emotion };
   const confidencePct = Math.round(data.confidence * 100);
   const displayText = locale === "zh" ? data.text_zh || data.text : data.text;
+  const whyText = locale === "zh" ? (data.why_zh || data.why) : (data.why || data.why_zh);
+  const obsText = locale === "zh" ? (data.observation_zh || data.observation) : (data.observation || data.observation_zh);
+
+  const confidenceLabel =
+    confidencePct >= 80
+      ? t("result.confHigh")
+      : confidencePct >= 60
+        ? t("result.confMid")
+        : t("result.confLow");
 
   return (
     <section className="flex flex-col gap-4">
-      {/* Emotion card */}
+      {/* Main clue */}
       <div className="rounded-2xl border border-muted-foreground/20 bg-card p-6 shadow-sm">
         {/* Header: emoji + emotion + confidence */}
         <div className="flex items-center justify-between mb-4">
@@ -116,9 +129,12 @@ export function AnalysisResult({
               <p className="text-lg font-semibold">
                 {locale === "zh" ? meta.zhLabel : meta.enLabel}
               </p>
-              <p className="text-xs text-muted-foreground">
-                {t("result.emotion")}: {data.emotion}
-              </p>
+              <div className="flex items-center gap-1.5">
+                <div className={`w-1.5 h-1.5 rounded-full ${
+                  confidencePct >= 70 ? "bg-green-500" : confidencePct >= 50 ? "bg-amber-500" : "bg-red-400"
+                }`} />
+                <p className="text-xs text-muted-foreground">{confidenceLabel}</p>
+              </div>
             </div>
           </div>
           <div className="text-right">
@@ -127,12 +143,28 @@ export function AnalysisResult({
           </div>
         </div>
 
-        {/* Pet speaking text */}
-        <div className="rounded-xl bg-muted/50 p-4">
+        {/* Pet speaking */}
+        <div className="rounded-xl bg-muted/50 p-4 mb-4">
           <p className="text-sm italic leading-relaxed">
             &ldquo;{displayText}&rdquo;
           </p>
         </div>
+
+        {/* Why this conclusion */}
+        {whyText && (
+          <div className="border-t border-muted-foreground/10 pt-3">
+            <p className="text-xs font-medium text-muted-foreground mb-1">{t("result.whyTitle")}</p>
+            <p className="text-sm leading-relaxed">{whyText}</p>
+          </div>
+        )}
+
+        {/* Observation tip */}
+        {obsText && (
+          <div className="border-t border-muted-foreground/10 pt-3 mt-3">
+            <p className="text-xs font-medium text-muted-foreground mb-1">{t("result.observeTitle")}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">{obsText}</p>
+          </div>
+        )}
       </div>
 
       {/* TTS Play Button */}

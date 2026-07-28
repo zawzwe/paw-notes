@@ -22,6 +22,18 @@
     "catDesc": "Meow",
     "dogDesc": "Woof"
   },
+  "context": {
+    "title": "What was happening?",
+    "hint": "Adding context helps PawNotes give a more thoughtful interpretation. You can skip.",
+    "someone_arrived": "Someone arrived",
+    "food_nearby": "Food nearby",
+    "playing": "Playing",
+    "left_alone": "Left alone",
+    "doorbell_noise": "Doorbell or noise",
+    "seeking_attention": "Seeking attention",
+    "new_place": "New place",
+    "not_sure": "Not sure"
+  },
   "sample": {
     "title": "No audio? Try a sample",
     "badge": "Sample",
@@ -66,7 +78,12 @@
     "emotion": "Emotion",
     "confidence": "Confidence",
     "playTTS": "Play voice",
-    "noResult": "No results yet"
+    "noResult": "No results yet",
+    "confHigh": "Stronger context support",
+    "confMid": "Some context support",
+    "confLow": "Limited context support",
+    "whyTitle": "Why this interpretation",
+    "observeTitle": "Something to notice"
   },
   "history": {
     "title": "Chats with your fur baby",
