@@ -1,6 +1,7 @@
 import { AuthButton } from "@/components/auth-button";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { HomeContent } from "@/components/home-content";
+import { TikTokAnalyzerViewEvent } from "@/components/tiktok-analyzer-view-event";
 import { BottomNav } from "@/components/bottom-nav";
 import { OnboardingWrapper } from "@/components/onboarding-wrapper";
 import { SiteFooter } from "@/components/site-footer";
@@ -26,6 +27,7 @@ export default async function AppPage() {
           </div>
         </nav>
 
+        <TikTokAnalyzerViewEvent />
         <OnboardingWrapper />
         <HomeContent />
 

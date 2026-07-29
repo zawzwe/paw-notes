@@ -4,6 +4,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { useState } from "react";
 import { Check, Zap, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { trackTikTokEvent, buildTikTokEventId } from "@/lib/tiktok-events";
 
 export function PricingCards() {
   const t = useTranslations();
@@ -25,6 +26,11 @@ export function PricingCards() {
       });
       const data = await res.json();
       if (data.url) {
+        trackTikTokEvent(
+          "InitiateCheckout",
+          { content_ids: ["pawnotes_monthly"], content_type: "product", description: "PawNotes Monthly Subscription", quantity: 1, value: 5.99, currency: "USD" },
+          buildTikTokEventId("checkout", data.url)
+        );
         window.location.href = data.url;
       } else {
         alert(data.error || "Failed to create checkout");

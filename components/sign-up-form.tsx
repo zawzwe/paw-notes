@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import { trackTikTokEvent, buildTikTokEventId } from "@/lib/tiktok-events";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -48,6 +49,7 @@ export function SignUpForm({
         },
       });
       if (error) throw error;
+      trackTikTokEvent("CompleteRegistration", {}, buildTikTokEventId("registration", email));
       router.push("/auth/sign-up-success");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");

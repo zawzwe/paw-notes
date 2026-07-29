@@ -16,6 +16,7 @@ import { AnalysisResult, type AnalysisData } from "@/components/result/analysis-
 import { useRecording } from "@/hooks/use-recording";
 import { ReplayOnboarding } from "@/components/replay-onboarding";
 import { useAuth } from "@/hooks/use-auth";
+import { trackTikTokEvent, buildTikTokEventId } from "@/lib/tiktok-events";
 
 type AnalyzeState = {
   loading: boolean;
@@ -125,6 +126,17 @@ export function HomeContent() {
       setWasSaved(result.recorded ?? false);
       setDailyRemaining(result.dailyRemaining ?? null);
       setUserPlan(result.plan ?? "free");
+
+      // TikTok StartTrial — first successful analysis
+      const hasAnalyzedBefore = localStorage.getItem("pawnotes-has-analyzed");
+      if (!hasAnalyzedBefore && result.recording_id) {
+        localStorage.setItem("pawnotes-has-analyzed", "true");
+        trackTikTokEvent(
+          "StartTrial",
+          { content_ids: ["pawnotes_free_analysis"], content_type: "product", description: "First completed PawNotes analysis" },
+          buildTikTokEventId("start_trial", result.recording_id)
+        );
+      }
 
       setAnalyzeState({
         loading: false,
