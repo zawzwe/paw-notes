@@ -41,16 +41,10 @@ export function SignUpForm({
     }
 
     try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/protected`,
-        },
-      });
+      const { error } = await supabase.auth.signUp({ email, password });
       if (error) throw error;
       trackTikTokEvent("CompleteRegistration", {}, buildTikTokEventId("registration", email));
-      router.push("/auth/sign-up-success");
+      router.push("/app");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
